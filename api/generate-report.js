@@ -7,11 +7,13 @@ function buildPrompt(lang, payload) {
   if (lang === "en") {
     return `You are the copywriter for Home Wellness Organisers, a holistic home-organising brand (Wellness Integration Method™) based in Brisbane, Australia. Your tone: warm, direct, plain Australian English — NEVER use words like "energy", "nervous system", "chakra" or esoteric language. Use Australian spelling (organise, colour, favourite, centre). No filler, no empty phrases.
 
-Using this client's data, write TWO things and return them as pure JSON (no markdown, no backticks, no text before or after):
+Using this client's data, write THREE things and return them as pure JSON (no markdown, no backticks, no text before or after):
 
 1. "houseMessage": A short message (3-4 sentences) in first person, as if the HOME were speaking to the client. Use the StoryBrand structure: name the VILLAIN (the real pattern/problem shown by her answers and lowest scores — be specific, not generic), then a turn where the home acknowledges she's not alone (briefly mention there's guidance/support available, without sounding like an ad), and close on an aspirational but believable note, not corny. Base it on her own words when she gave them, but IMPROVED — don't repeat them verbatim or copy grammar mistakes.
 
-2. "roomSymptoms": an object with one entry per room key: entryway, laundry, bathroom, kitchen, living, dining, wardrobe, office, bedroom, garden. For each, if the client wrote an observation, turn it into ONE clean, well-written descriptive sentence, correcting grammar and lifting the tone without inventing details she didn't mention. If she left it blank, generate a short, plausible sentence based on the room name and its friction score (low score = more friction).
+2. "roomSymptoms": an object with one entry per room key: entryway, laundry, bathroom, kitchen, living, dining, wardrobe, office, bedroom, garden. For each, if the client wrote an observation, rewrite it as ONE polished, third-person, analytical sentence — like an expert observation, not a quoted testimonial. Correct grammar and lift the tone, but KEEP any specific concrete details she mentioned (names of people, pets, particular objects or habits) — those specifics are what make it feel real and personal, not generic. Never frame it as "in her words" or a direct quote. If she left it blank, generate a short, plausible sentence based on the room name and its friction score (low score = more friction).
+
+3. "strengthText": ONE polished, third-person analytical sentence based on why she chose "${peaceRoom}" as her place of peace ("${peaceWhy}"). Same rules as above: correct grammar, keep specific details, no quoting, read like an expert observation.
 
 Client data:
 Name: ${name}
@@ -23,16 +25,18 @@ What she wrote if her home could talk: "${houseVoice}"
 Her room-by-room observations (some may be blank): ${JSON.stringify(roomRaw)}
 
 Respond with ONLY this JSON, nothing else:
-{"houseMessage": "...", "roomSymptoms": {"entryway":"...", "laundry":"...", "bathroom":"...", "kitchen":"...", "living":"...", "dining":"...", "wardrobe":"...", "office":"...", "bedroom":"...", "garden":"..."}}`;
+{"houseMessage": "...", "strengthText": "...", "roomSymptoms": {"entryway":"...", "laundry":"...", "bathroom":"...", "kitchen":"...", "living":"...", "dining":"...", "wardrobe":"...", "office":"...", "bedroom":"...", "garden":"..."}}`;
   }
 
   return `Eres el redactor de Home Wellness Organisers, una marca de organización holística del hogar (Wellness Integration Method™). Tu tono: cálido, directo, en español neutro/mexicano sencillo — NUNCA uses palabras como "energía", "sistema nervioso", "chakra" o lenguaje esotérico. Nada de relleno ni frases vacías.
 
-Con los datos de esta clienta, redacta DOS cosas y devuélvelas en JSON puro (sin markdown, sin backticks, sin texto antes o después):
+Con los datos de esta clienta, redacta TRES cosas y devuélvelas en JSON puro (sin markdown, sin backticks, sin texto antes o después):
 
 1. "houseMessage": Un mensaje corto (3-4 oraciones) en primera persona, como si la CASA le hablara a la clienta. Usa la estructura StoryBrand: nombra el VILLANO (el patrón/problema real que describen sus respuestas y sus puntajes más bajos — sé específico, no genérico), luego un giro donde la casa reconoce que la clienta no está sola (menciona brevemente que hay una guía/apoyo disponible, sin sonar a anuncio), y cierra con una nota aspiracional pero creíble, no cursi. Basado en sus propias palabras cuando las dio, pero MEJORADO — no las repitas literalmente ni copies errores de gramática.
 
-2. "roomSymptoms": un objeto con una entrada por cada una de estas claves de cuarto: entryway, laundry, bathroom, kitchen, living, dining, wardrobe, office, bedroom, garden. Para cada una, si la clienta escribió una observación, conviértela en UNA oración limpia, bien escrita, en tercera persona descriptiva, corrigiendo gramática y elevando el tono sin inventar detalles que no dijo. Si no escribió nada para ese cuarto, genera una oración breve y plausible basada en el nombre del cuarto y su puntaje de fricción (puntaje bajo = más fricción).
+2. "roomSymptoms": un objeto con una entrada por cada una de estas claves de cuarto: entryway, laundry, bathroom, kitchen, living, dining, wardrobe, office, bedroom, garden. Para cada una, si la clienta escribió una observación, reescríbela como UNA oración pulida, en tercera persona, con tono analítico — como una observación experta, no como un testimonio citado. Corrige la gramática y eleva el tono, pero CONSERVA cualquier detalle específico y concreto que haya mencionado (nombres de personas, mascotas, objetos o hábitos particulares) — esos detalles son los que hacen que se sienta real y personal, no genérico. Nunca lo enmarques como "en sus palabras" ni como cita directa. Si no escribió nada, genera una oración breve y plausible basada en el nombre del cuarto y su puntaje de fricción (puntaje bajo = más fricción).
+
+3. "strengthText": UNA oración pulida, en tercera persona, tono analítico, basada en por qué eligió "${peaceRoom}" como su lugar de paz ("${peaceWhy}"). Mismas reglas: corrige gramática, conserva detalles específicos, sin citar textual, que se lea como observación experta.
 
 Datos de la clienta:
 Nombre: ${name}
@@ -44,7 +48,7 @@ Lo que ella escribió si su casa le hablara: "${houseVoice}"
 Sus observaciones por cuarto (puede haber vacíos): ${JSON.stringify(roomRaw)}
 
 Responde ÚNICAMENTE con este JSON, nada más:
-{"houseMessage": "...", "roomSymptoms": {"entryway":"...", "laundry":"...", "bathroom":"...", "kitchen":"...", "living":"...", "dining":"...", "wardrobe":"...", "office":"...", "bedroom":"...", "garden":"..."}}`;
+{"houseMessage": "...", "strengthText": "...", "roomSymptoms": {"entryway":"...", "laundry":"...", "bathroom":"...", "kitchen":"...", "living":"...", "dining":"...", "wardrobe":"...", "office":"...", "bedroom":"...", "garden":"..."}}`;
 }
 
 export default async function handler(req, res) {
