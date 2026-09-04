@@ -9,12 +9,16 @@ function escapeHtml(str) {
 }
 
 function buildEmailHtml(lang, data) {
-  const { name, houseMessage, strengthText, strengthRoom, priorityRoom, lifeHomeConnection, rooms } = data;
+  const { name, houseMessage, strengthText, strengthRoom, priorityRoom, lifeHomeConnection, homeWheel, lifeWheel, rooms } = data;
   const isEn = lang === "en";
 
   const labels = isEn
-    ? { title: "Your Home Wellness Report", houseMsg: "The Message of Your Home", strength: "Your Strength", priority: "Priority #1", sees: "What we see", means: "What it means", week: "This week", further: "If you want to go further", closing: "With care, Sol · Home Wellness Organisers" }
-    : { title: "Tu Reporte de Bienestar en el Hogar", houseMsg: "El Mensaje de Tu Casa", strength: "Tu Fortaleza", priority: "Prioridad #1", sees: "Lo que vemos", means: "Lo que significa", week: "Esta semana", further: "Si quieres ir más allá", closing: "Con cariño, Sol · Home Wellness Organisers" };
+    ? { title: "Your Home Wellness Report", houseMsg: "The Message of Your Home", strength: "Your Strength", priority: "Priority #1", sees: "What we see", means: "What it means", week: "This week", further: "If you want to go further", closing: "With care, Sol · Home Wellness Organisers", lifeWheelH: "Your Wheel of Life", homeWheelH: "Your Home Wellness Wheel" }
+    : { title: "Tu Reporte de Bienestar en el Hogar", houseMsg: "El Mensaje de Tu Casa", strength: "Tu Fortaleza", priority: "Prioridad #1", sees: "Lo que vemos", means: "Lo que significa", week: "Esta semana", further: "Si quieres ir más allá", closing: "Con cariño, Sol · Home Wellness Organisers", lifeWheelH: "Tu Rueda de Vida", homeWheelH: "Tu Rueda del Hogar" };
+
+  const wheelListHtml = (items) => `<ul style="font-family:sans-serif; color:#333; padding-left:18px;">
+    ${(items || []).map(i => `<li>${escapeHtml(i.label)}: <b>${i.score}/5</b></li>`).join("")}
+  </ul>`;
 
   const roomsHtml = rooms.map((r) => `
     <div style="border-left:4px solid #96BC78; padding:14px 18px; margin-bottom:16px; background:#fff;">
@@ -38,6 +42,12 @@ function buildEmailHtml(lang, data) {
     <p style="font-style:italic; border-left:3px solid #96BC78; padding-left:12px; color:#333;">"${escapeHtml(houseMessage)}"</p>
 
     ${lifeHomeConnection ? `<p style="background:#F6EAD1; padding:12px 16px; border-radius:4px; color:#333;">${escapeHtml(lifeHomeConnection)}</p>` : ""}
+
+    <h2 style="color:#4DB3BC; font-size:16px; margin-top:20px;">${labels.lifeWheelH}</h2>
+    ${wheelListHtml(lifeWheel)}
+
+    <h2 style="color:#96BC78; font-size:16px;">${labels.homeWheelH}</h2>
+    ${wheelListHtml(homeWheel)}
 
     <h2 style="color:#96BC78; font-size:16px; margin-top:24px;">${labels.strength} — ${escapeHtml(strengthRoom)}</h2>
     <p style="color:#333;">${escapeHtml(strengthText)}</p>
@@ -72,8 +82,6 @@ export default async function handler(req, res) {
 
   const html = buildEmailHtml(lang, body);
   const subject = lang === "en" ? "Your Home Wellness Report" : "Tu Reporte de Bienestar en el Hogar";
-  const recipients = [email];
-  if (notifyEmail && notifyEmail !== email) recipients.push(notifyEmail);
 
   try {
     const response = await fetch("https://api.resend.com/emails", {
@@ -84,7 +92,8 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         from: "Home Wellness Organisers <onboarding@resend.dev>",
-        to: recipients,
+        to: [email],
+        bcc: notifyEmail ? [notifyEmail] : undefined,
         subject,
         html,
       }),
