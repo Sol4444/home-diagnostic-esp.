@@ -268,6 +268,18 @@ function highlightMood(roomKey, idx) {
 }
 
 function showFree() {
+  const nameVal = document.getElementById('nameInput').value.trim();
+  const emailVal = document.getElementById('emailInput').value.trim();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
+
+  if (!nameVal || !emailVal || !emailOk) {
+    const msg = LANG === 'en'
+      ? 'Please enter your name and a valid email so we can send you your report.'
+      : 'Por favor ingresa tu nombre y un correo válido para poder enviarte tu reporte.';
+    alert(msg);
+    return;
+  }
+
   document.getElementById('contextSection').style.display = 'none';
   document.getElementById('freeSection').style.display = 'block';
 }
