@@ -91,7 +91,7 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        from: "Home Wellness Organisers <onboarding@resend.dev>",
+        from: "Home Wellness Organisers <reports@homeasmirror.com>",
         to: [email],
         bcc: notifyEmail ? [notifyEmail] : undefined,
         subject,
