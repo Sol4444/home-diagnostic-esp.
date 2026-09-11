@@ -38,7 +38,7 @@ const TIPS = {
 const ROOM_KEYS = ["entryway", "laundry", "bathroom", "kitchen", "living", "dining", "wardrobe", "office", "bedroom", "garden"];
 
 function buildClientEmailHtml(lang, data) {
-  const { name, houseMessage, strengthText, strengthRoom, priorityRoom, lifeHomeConnection, closingParagraph, closingAffirmation, homeWheel, lifeWheel, rooms } = data;
+  const { name, houseMessage, strengthText, strengthRoom, priorityRoom, lifeHomeConnection, patternParagraph, closingParagraph, closingAffirmation, homeWheel, lifeWheel, rooms } = data;
   const isEn = lang === "en";
 
   const labels = isEn
@@ -95,6 +95,8 @@ function buildClientEmailHtml(lang, data) {
     <h2 style="color:#716D71; font-size:18px; margin-top:24px;">${isEn ? "Your Home, Room by Room" : "Tu Casa, Espacio por Espacio"}</h2>
     ${roomsHtml}
 
+    ${patternParagraph ? `<div style="background:#fff; border:2px solid #96BC78; border-radius:8px; padding:16px 20px; margin:18px 0;"><p style="font-size:11px; font-weight:bold; color:#96BC78; text-transform:uppercase; margin:0 0 6px; font-family:sans-serif;">${isEn ? "Your pattern today" : "Tu patr\u00f3n de hoy"}</p><p style="margin:0; color:#333; font-family:sans-serif;">${escapeHtml(patternParagraph)}</p></div>` : ""}
+
     ${closingParagraph ? `<p style="color:#333;">${escapeHtml(closingParagraph)}</p>` : ""}
     ${closingAffirmation ? `<p style="font-style:italic; text-align:center; color:#96BC78; font-size:16px; margin:16px 0;">"${escapeHtml(closingAffirmation)}"</p>` : ""}
 
@@ -113,7 +115,10 @@ function buildAdminEmailHtml(lang, data) {
     ${(items || []).map(i => `<li>${escapeHtml(i.label)}: <b>${i.score}/10</b></li>`).join("")}
   </ul>`;
 
-  const rawHtml = ROOM_KEYS.map((k) => `<p style="font-family:sans-serif; margin:4px 0;"><b>${escapeHtml(k)}:</b> ${escapeHtml((roomRaw && roomRaw[k]) || "—")}</p>`).join("");
+  const rawHtml = ROOM_KEYS.map((k) => {
+    const mood = roomRaw && roomRaw[k + "__mood"];
+    return `<p style="font-family:sans-serif; margin:4px 0;"><b>${escapeHtml(k)}:</b> ${escapeHtml((roomRaw && roomRaw[k]) || "\u2014")}${mood ? ` <i>(${isEn ? "mood" : "sentimiento"}: ${escapeHtml(mood)})</i>` : ""}</p>`;
+  }).join("");
 
   return `
   <div style="max-width:600px; margin:0 auto; font-family:sans-serif;">
