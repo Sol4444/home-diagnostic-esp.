@@ -9,7 +9,7 @@ function escapeHtml(str) {
 }
 
 function buildEmailHtml(lang, data) {
-  const { name, houseMessage, strengthText, strengthRoom, priorityRoom, lifeHomeConnection, homeWheel, lifeWheel, rooms } = data;
+  const { name, houseMessage, strengthText, strengthRoom, priorityRoom, lifeHomeConnection, closingNote, homeWheel, lifeWheel, rooms } = data;
   const isEn = lang === "en";
 
   const labels = isEn
@@ -57,6 +57,8 @@ function buildEmailHtml(lang, data) {
     <h2 style="color:#716D71; font-size:18px; margin-top:24px;">${isEn ? "Your Home, Room by Room" : "Tu Casa, Espacio por Espacio"}</h2>
     ${roomsHtml}
 
+    ${closingNote ? `<p style="font-style:italic; text-align:center; color:#716D71;">${escapeHtml(closingNote)}</p>` : ""}
+
     <p style="color:#999; font-style:italic; margin-top:24px;">${labels.closing}</p>
   </div>`;
 }
@@ -91,7 +93,7 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        from: "Home Wellness Organisers <reports@homeasmirror.com>",
+        from: "Home Wellness Organisers <onboarding@resend.dev>",
         to: [email],
         bcc: notifyEmail ? [notifyEmail] : undefined,
         subject,

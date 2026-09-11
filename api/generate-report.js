@@ -1,64 +1,120 @@
 // This code runs on Vercel's servers, NEVER in the client's browser.
 // Your API key stays secret here — it's read from an environment variable.
+//
+// ROOM_THEMES below is internal calibration only — drawn from the Mirror
+// Methodology's Alignment Matrix and Diagnosis Matrix (Mess -> Message ->
+// Master Insight per room). It is NEVER shown to the client, and the model
+// is explicitly told not to copy it or use chakra/portal language — it's
+// only there so the tone and "translation logic" (symptom -> psychological
+// read) stays consistent and grounded, instead of generic or repetitive.
+
+const ROOM_THEMES = {
+  en: {
+    entryway: { theme: "boundaries — filtering what gets into your inner world", exampleMess: "blocked door, too many other people's things, poor lighting", exampleMessage: "I struggle to filter who and what enters my inner world." },
+    laundry: { theme: "rhythm — invisible mental load", exampleMess: "endless piles, clean clothes left unfolded for days", exampleMessage: "I'm drowning in basic chores; my life isn't flowing." },
+    bathroom: { theme: "self-acceptance — letting go of past versions of yourself", exampleMess: "expired products, hoarded free samples, tatty towels", exampleMessage: "My own renewal is at the bottom of my priority list." },
+    kitchen: { theme: "self-care — nourishment beyond survival mode", exampleMess: "chipped plates, scratched pans, eating standing up", exampleMessage: "I don't deserve real nourishment, only survival fuel." },
+    living: { theme: "self-love — permission to rest without guilt", exampleMess: "furniture you don't love, decor chosen for guests not you", exampleMessage: "I'm living by other people's rules; I don't allow myself any joy." },
+    dining: { theme: "self-respect — reclaiming your own place", exampleMess: "table covered in other people's things", exampleMessage: "I don't have a place of my own; everyone else's needs invade my space." },
+    wardrobe: { theme: "self-worth — dressing who you are today, not who you were", exampleMess: "clothes in different sizes, conflicting styles", exampleMessage: "I'm scared to show who I am today; I'm hiding in the past." },
+    office: { theme: "self-trust — clarity to decide and move", exampleMess: "desk covered in to-do piles, tangled cables", exampleMessage: "I'm terrified of making the next move; I'd rather stay in the fog." },
+    bedroom: { theme: "self-surrender — allowing real rest and vulnerability", exampleMess: "unmade bed, old sheets, invisible clutter", exampleMessage: "I'm not worth the effort of creating beauty for myself if no one's watching." },
+    garden: { theme: "self-alignment — daring to expand and take up space", exampleMess: "overgrown weeds, dusty outdoor furniture", exampleMessage: "I've stopped tending to my own growth; my vital energy is dormant." },
+  },
+  es: {
+    entryway: { theme: "límites — filtrar qué entra a tu mundo interno", exampleMess: "puerta bloqueada, cosas de otros acumuladas, poca luz", exampleMessage: "Me cuesta filtrar quién y qué entra a mi mundo interno." },
+    laundry: { theme: "ritmo — carga mental invisible", exampleMess: "montones interminables, ropa limpia sin doblar por días", exampleMessage: "Me ahogo en tareas básicas; mi vida no fluye." },
+    bathroom: { theme: "autoaceptación — soltar versiones pasadas de ti", exampleMess: "productos vencidos, muestras acumuladas, toallas gastadas", exampleMessage: "Mi propia renovación está hasta el final de mi lista de prioridades." },
+    kitchen: { theme: "autocuidado — nutrirte más allá de sobrevivir", exampleMess: "platos despostillados, sartenes rayados, comer de pie", exampleMessage: "No merezco nutrirme de verdad, solo sobrevivir." },
+    living: { theme: "autoamor — permiso de descansar sin culpa", exampleMess: "muebles que no amas, decoración pensada para visitas", exampleMessage: "Vivo bajo las reglas de otros; no me permito disfrutar." },
+    dining: { theme: "autorespeto — reclamar tu propio lugar", exampleMess: "mesa cubierta de cosas de otros", exampleMessage: "No tengo un lugar propio; las necesidades de otros invaden mi espacio." },
+    wardrobe: { theme: "autovalía — vestir a quien eres hoy, no a quien fuiste", exampleMess: "ropa de tallas distintas, estilos que no coinciden", exampleMessage: "Me da miedo mostrar quién soy hoy; me escondo en el pasado." },
+    office: { theme: "autoconfianza — claridad para decidir y avanzar", exampleMess: "escritorio cubierto de pendientes, cables enredados", exampleMessage: "Me aterra dar el siguiente paso; prefiero quedarme en la niebla." },
+    bedroom: { theme: "autoentrega — permitirte descanso real y vulnerabilidad", exampleMess: "cama sin tender, sábanas viejas, desorden invisible", exampleMessage: "No merezco el esfuerzo de crear belleza para mí si nadie más lo ve." },
+    garden: { theme: "autoalineación — atreverte a expandirte y ocupar espacio", exampleMess: "maleza crecida, muebles de exterior empolvados", exampleMessage: "Dejé de cuidar mi propio crecimiento; mi energía vital está dormida." },
+  },
+};
+
+const ROOM_KEYS = ["entryway", "laundry", "bathroom", "kitchen", "living", "dining", "wardrobe", "office", "bedroom", "garden"];
 
 function buildPrompt(lang, payload) {
   const { name, household, ageBracket, pets, homeScores, lifeScores, peaceRoom, peaceWhy, houseVoice, additionalNotes, roomRaw } = payload;
+  const themes = ROOM_THEMES[lang];
+  const themesBlock = ROOM_KEYS.map((k) => `- ${k}: theme = ${themes[k].theme}. Calibration example only (do NOT copy or reuse the wording) — a client with "${themes[k].exampleMess}" might read as "${themes[k].exampleMessage}"`).join("\n");
 
   if (lang === "en") {
-    return `You are the copywriter for Home Wellness Organisers, a holistic home-organising brand (Wellness Integration Method™) based in Brisbane, Australia. Your tone: warm, direct, plain Australian English — NEVER use words like "energy", "nervous system", "chakra" or esoteric language. Use Australian spelling (organise, colour, favourite, centre). No filler, no empty phrases.
+    return `You are the copywriter for Home Wellness Organisers, a holistic home-organising brand (Wellness Integration Method™) based in Brisbane, Australia. Your tone: warm, direct, plain Australian English — NEVER use words like "energy", "nervous system", "chakra", "portal", or esoteric/mystical language. Use Australian spelling (organise, colour, favourite, centre). No filler, no empty phrases.
 
-Using this client's data, write FOUR things and return them as pure JSON (no markdown, no backticks, no text before or after):
+Internal calibration only — never reveal this to the client, never use these exact words, never mention "themes" or this list at all. It exists purely so your "meaning" writing for each room stays thematically grounded instead of generic:
+${themesBlock}
+
+Using this client's data, write FIVE things and return them as pure JSON (no markdown, no backticks, no text before or after):
 
 1. "houseMessage": A short message (3-4 sentences) in first person, as if the HOME were speaking to the client. Use the StoryBrand structure: name the VILLAIN (the real pattern/problem shown by her answers and lowest scores — be specific, not generic), then a turn where the home acknowledges she's not alone (briefly mention there's guidance/support available, without sounding like an ad), and close on an aspirational but believable note, not corny. Base it on her own words when she gave them, but IMPROVED — don't repeat them verbatim or copy grammar mistakes.
 
-2. "roomSymptoms": an object with one entry per room key: entryway, laundry, bathroom, kitchen, living, dining, wardrobe, office, bedroom, garden. For each, if the client wrote an observation, rewrite it as ONE polished, third-person, analytical sentence — like an expert observation, not a quoted testimonial. Correct grammar and lift the tone, but KEEP any specific concrete details she mentioned (names of people, pets, particular objects or habits) — those specifics are what make it feel real and personal, not generic. Never frame it as "in her words" or a direct quote. If she left it blank, generate a short, plausible sentence based on the room name and its friction score (low score = more friction).
+2. "rooms": an object with one entry per room key (entryway, laundry, bathroom, kitchen, living, dining, wardrobe, office, bedroom, garden). Each entry is an object with THREE fields:
+   - "symptom": ONE polished, third-person, analytical sentence describing what she reported for that room (or a plausible sentence based on the room and its friction score if she left it blank). Keep any specific concrete details she mentioned (names, pets, habits) — never frame it as a direct quote.
+   - "meaning": ONE sentence explaining what this SPECIFIC symptom could be reflecting, grounded in that room's theme above but written in your own natural words — NOT a generic room-level statement, and NEVER identical to what you'd write for a different client with a different symptom in the same room. Use soft, invitational language ("this could be pointing to...", never "this means..."). No mystical or clinical words.
+   - "action": ONE concrete, practical action for this week, tailored to the SPECIFIC symptom described (not a generic room tip), appropriate for her household type (${household}).
+   Vary meaning and action meaningfully based on what she actually described — never reuse fixed phrasing across different people or different symptoms.
 
-3. "strengthText": ONE polished, third-person analytical sentence based on why she chose "${peaceRoom}" as her place of peace ("${peaceWhy}"). Same rules as above: correct grammar, keep specific details, no quoting, read like an expert observation.
+3. "strengthText": ONE polished, third-person analytical sentence based on why she chose "${peaceRoom}" as her place of peace ("${peaceWhy}").
 
-4. "lifeHomeConnection": ONE or two sentences connecting her LOWEST-scoring Wheel of Life area to the home pattern that best relates to it (based on her lowest-scoring home areas and what she wrote). Be specific about which life area and which home area you are connecting, and explain the link in plain, grounded language — not mystical. Frame it as a possible connection worth noticing, not a diagnosis ("this could be pointing to...", not "this means...").
+4. "lifeHomeConnection": ONE or two sentences connecting her LOWEST-scoring Wheel of Life area to the home pattern that best relates to it. Be specific about which life area and which home area, plain and grounded, not mystical. Frame as a possible connection worth noticing ("this could be pointing to..."), not a diagnosis.
+
+5. "closingNote": ONE warm, brief closing sentence (not a sales pitch) that ties the report together, referencing her Priority #1 area by name.
 
 Client data:
 Name: ${name}
 Age range: ${ageBracket || "not given"}
 Has pets: ${pets || "not given"}
 Household type: ${household}
-Home Wellness Wheel scores (1-5, lower = more friction): ${JSON.stringify(homeScores)}
-Wheel of Life scores (1-5): ${JSON.stringify(lifeScores)}
+Home Wellness Wheel scores (1-10, lower = more friction): ${JSON.stringify(homeScores)}
+Wheel of Life scores (1-10): ${JSON.stringify(lifeScores)}
 Her chosen place of peace: ${peaceRoom} — reason given: "${peaceWhy}"
 What she wrote if her home could talk: "${houseVoice}"
 Anything else she wanted to add: "${additionalNotes || ""}"
 Her room-by-room observations, selected from checkboxes plus an optional free-text note (some may be blank): ${JSON.stringify(roomRaw)}
 
 Respond with ONLY this JSON, nothing else:
-{"houseMessage": "...", "strengthText": "...", "lifeHomeConnection": "...", "roomSymptoms": {"entryway":"...", "laundry":"...", "bathroom":"...", "kitchen":"...", "living":"...", "dining":"...", "wardrobe":"...", "office":"...", "bedroom":"...", "garden":"..."}}`;
+{"houseMessage": "...", "strengthText": "...", "lifeHomeConnection": "...", "closingNote": "...", "rooms": {"entryway": {"symptom":"...","meaning":"...","action":"..."}, "laundry": {"symptom":"...","meaning":"...","action":"..."}, "bathroom": {"symptom":"...","meaning":"...","action":"..."}, "kitchen": {"symptom":"...","meaning":"...","action":"..."}, "living": {"symptom":"...","meaning":"...","action":"..."}, "dining": {"symptom":"...","meaning":"...","action":"..."}, "wardrobe": {"symptom":"...","meaning":"...","action":"..."}, "office": {"symptom":"...","meaning":"...","action":"..."}, "bedroom": {"symptom":"...","meaning":"...","action":"..."}, "garden": {"symptom":"...","meaning":"...","action":"..."}}}`;
   }
 
-  return `Eres el redactor de Home Wellness Organisers, una marca de organización holística del hogar (Wellness Integration Method™). Tu tono: cálido, directo, en español neutro/mexicano sencillo — NUNCA uses palabras como "energía", "sistema nervioso", "chakra" o lenguaje esotérico. Nada de relleno ni frases vacías.
+  return `Eres el redactor de Home Wellness Organisers, una marca de organización holística del hogar (Wellness Integration Method™). Tu tono: cálido, directo, en español neutro/mexicano sencillo — NUNCA uses palabras como "energía", "sistema nervioso", "chakra", "portal" o lenguaje esotérico/místico. Nada de relleno ni frases vacías.
 
-Con los datos de esta clienta, redacta CUATRO cosas y devuélvelas en JSON puro (sin markdown, sin backticks, sin texto antes o después):
+Calibración interna únicamente — nunca reveles esto a la clienta, nunca uses estas palabras exactas, nunca menciones "temas" ni esta lista. Existe solo para que tu redacción de "meaning" en cada cuarto se mantenga anclada temáticamente en vez de genérica:
+${themesBlock}
 
-1. "houseMessage": Un mensaje corto (3-4 oraciones) en primera persona, como si la CASA le hablara a la clienta. Usa la estructura StoryBrand: nombra el VILLANO (el patrón/problema real que describen sus respuestas y sus puntajes más bajos — sé específico, no genérico), luego un giro donde la casa reconoce que la clienta no está sola (menciona brevemente que hay una guía/apoyo disponible, sin sonar a anuncio), y cierra con una nota aspiracional pero creíble, no cursi. Basado en sus propias palabras cuando las dio, pero MEJORADO — no las repitas literalmente ni copies errores de gramática.
+Con los datos de esta clienta, redacta CINCO cosas y devuélvelas en JSON puro (sin markdown, sin backticks, sin texto antes o después):
 
-2. "roomSymptoms": un objeto con una entrada por cada una de estas claves de cuarto: entryway, laundry, bathroom, kitchen, living, dining, wardrobe, office, bedroom, garden. Para cada una, si la clienta escribió una observación, reescríbela como UNA oración pulida, en tercera persona, con tono analítico — como una observación experta, no como un testimonio citado. Corrige la gramática y eleva el tono, pero CONSERVA cualquier detalle específico y concreto que haya mencionado (nombres de personas, mascotas, objetos o hábitos particulares) — esos detalles son los que hacen que se sienta real y personal, no genérico. Nunca lo enmarques como "en sus palabras" ni como cita directa. Si no escribió nada, genera una oración breve y plausible basada en el nombre del cuarto y su puntaje de fricción (puntaje bajo = más fricción).
+1. "houseMessage": Un mensaje corto (3-4 oraciones) en primera persona, como si la CASA le hablara a la clienta. Usa la estructura StoryBrand: nombra el VILLANO (el patrón/problema real que describen sus respuestas y sus puntajes más bajos — sé específico, no genérico), luego un giro donde la casa reconoce que la clienta no está sola (menciona brevemente que hay una guía/apoyo disponible, sin sonar a anuncio), y cierra con una nota aspiracional pero creíble, no cursi. Basado en sus propias palabras cuando las dio, pero MEJORADO.
 
-3. "strengthText": UNA oración pulida, en tercera persona, tono analítico, basada en por qué eligió "${peaceRoom}" como su lugar de paz ("${peaceWhy}"). Mismas reglas: corrige gramática, conserva detalles específicos, sin citar textual, que se lea como observación experta.
+2. "rooms": un objeto con una entrada por cada clave de cuarto (entryway, laundry, bathroom, kitchen, living, dining, wardrobe, office, bedroom, garden). Cada entrada es un objeto con TRES campos:
+   - "symptom": UNA oración pulida, en tercera persona, tono analítico, describiendo lo que reportó en ese cuarto (o una oración plausible basada en el cuarto y su fricción si lo dejó vacío). Conserva detalles específicos (nombres, mascotas, hábitos) — nunca lo enmarques como cita directa.
+   - "meaning": UNA oración explicando qué podría estar reflejando ESE síntoma específico, anclada en el tema de ese cuarto de arriba pero escrita con tus propias palabras naturales — NO una afirmación genérica de cuarto, y NUNCA idéntica a lo que escribirías para otra clienta con otro síntoma en el mismo cuarto. Usa lenguaje suave e invitacional ("esto podría estar señalando...", nunca "esto significa..."). Sin palabras místicas ni clínicas.
+   - "action": UNA acción concreta y práctica para esta semana, hecha a la medida del síntoma ESPECÍFICO descrito (no un tip genérico de cuarto), apropiada para su tipo de hogar (${household}).
+   Varía meaning y action de forma significativa según lo que realmente describió — nunca reuses frases fijas entre distintas personas o distintos síntomas.
 
-4. "lifeHomeConnection": UNA o dos oraciones conectando su área de Vida con el puntaje MÁS BAJO, con el patrón de su casa que más se relacione (basado en sus áreas del hogar con puntaje más bajo y lo que escribió). Sé específico sobre qué área de vida y qué área del hogar estás conectando, y explica el vínculo en lenguaje sencillo y aterrizado — no místico. Enmárcalo como una posible conexión que vale la pena notar, no como un diagnóstico ("esto podría estar señalando...", no "esto significa...").
+3. "strengthText": UNA oración pulida, en tercera persona, tono analítico, basada en por qué eligió "${peaceRoom}" como su lugar de paz ("${peaceWhy}").
+
+4. "lifeHomeConnection": UNA o dos oraciones conectando su área de Vida con el puntaje MÁS BAJO, con el patrón de su casa que más se relacione. Sé específico sobre qué área y qué cuarto, lenguaje sencillo y aterrizado, no místico. Enmárcalo como una posible conexión ("esto podría estar señalando..."), no como diagnóstico.
+
+5. "closingNote": UNA oración de cierre cálida y breve (no venta), que amarre el reporte, mencionando por nombre su área de Prioridad #1.
 
 Datos de la clienta:
 Nombre: ${name}
 Rango de edad: ${ageBracket || "no dado"}
 Tiene mascotas: ${pets || "no dado"}
 Tipo de hogar: ${household}
-Puntajes Rueda del Hogar (1-5, más bajo = más fricción): ${JSON.stringify(homeScores)}
-Puntajes Rueda de Vida (1-5): ${JSON.stringify(lifeScores)}
+Puntajes Rueda del Hogar (1-10, más bajo = más fricción): ${JSON.stringify(homeScores)}
+Puntajes Rueda de Vida (1-10): ${JSON.stringify(lifeScores)}
 Su zona de paz elegida: ${peaceRoom} — razón que dio: "${peaceWhy}"
 Lo que ella escribió si su casa le hablara: "${houseVoice}"
 Algo más que quiso agregar: "${additionalNotes || ""}"
 Sus observaciones por cuarto, elegidas de opciones más una nota libre opcional (puede haber vacíos): ${JSON.stringify(roomRaw)}
 
 Responde ÚNICAMENTE con este JSON, nada más:
-{"houseMessage": "...", "strengthText": "...", "lifeHomeConnection": "...", "roomSymptoms": {"entryway":"...", "laundry":"...", "bathroom":"...", "kitchen":"...", "living":"...", "dining":"...", "wardrobe":"...", "office":"...", "bedroom":"...", "garden":"..."}}`;
+{"houseMessage": "...", "strengthText": "...", "lifeHomeConnection": "...", "closingNote": "...", "rooms": {"entryway": {"symptom":"...","meaning":"...","action":"..."}, "laundry": {"symptom":"...","meaning":"...","action":"..."}, "bathroom": {"symptom":"...","meaning":"...","action":"..."}, "kitchen": {"symptom":"...","meaning":"...","action":"..."}, "living": {"symptom":"...","meaning":"...","action":"..."}, "dining": {"symptom":"...","meaning":"...","action":"..."}, "wardrobe": {"symptom":"...","meaning":"...","action":"..."}, "office": {"symptom":"...","meaning":"...","action":"..."}, "bedroom": {"symptom":"...","meaning":"...","action":"..."}, "garden": {"symptom":"...","meaning":"...","action":"..."}}}`;
 }
 
 export default async function handler(req, res) {
@@ -84,7 +140,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-6",
-        max_tokens: 1400,
+        max_tokens: 2600,
         messages: [{ role: "user", content: buildPrompt(lang, body) }],
       }),
     });
