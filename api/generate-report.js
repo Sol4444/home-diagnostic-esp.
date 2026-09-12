@@ -105,31 +105,33 @@ Responde ÚNICAMENTE con este JSON, nada más:
 }
 
 function buildOverviewPrompt(lang, payload) {
-  const { name, household, ageBracket, pets, homeScores, lifeScores, peaceRoom, peaceWhy, houseVoice, additionalNotes, roomRaw } = payload;
+  const { name, household, ageBracket, pets, homeScores, lifeScores, lifeAreaLabels, homeRoomLabels, priorityRoomLabel, lowestLifeAreaLabel, peaceRoom, peaceWhy, houseVoice, additionalNotes, roomRaw } = payload;
 
   if (lang === "en") {
     return `You are the copywriter for Home Wellness Organisers (Wellness Integration Method™), Brisbane, Australia. ${SHARED_VOICE.en}
 
-Using this client's data, write FIVE things and return them as pure JSON (no markdown, no backticks, no text before or after):
+Using this client's data, write SIX things and return them as pure JSON (no markdown, no backticks, no text before or after):
 
 1. "houseMessage": A short message (3-4 sentences) in first person, as if the HOME were speaking directly to her (second person "you"). StoryBrand structure: name the VILLAIN (the real pattern shown by her answers and lowest scores — specific, not generic), a turn where the home acknowledges she's not alone (briefly, no ad-like tone), close aspirational but believable. Base it on her own words when given, but IMPROVED, not verbatim.
 
 2. "strengthText": ONE polished, second-person sentence based on why she chose "${peaceRoom}" as her place of peace ("${peaceWhy}").
 
-3. "lifeHomeConnection": ONE or two sentences, second person, connecting her LOWEST-scoring Wheel of Life area to the home pattern that best relates to it. Specific, plain, not mystical.
+3. "lifeHomeConnection": ONE or two sentences, second person, connecting "${lowestLifeAreaLabel}" (her lowest-scoring Wheel of Life area — use this exact name) to "${priorityRoomLabel}" (her Priority #1 home area — use this exact name). Specific, plain, not mystical — explain how the two could be related.
 
 4. "patternParagraph": TWO to three second-person sentences identifying the COMMON THREAD running across her highest-friction rooms (lowest home scores) — name the shared underlying pattern (e.g. boundaries, self-worth, rest) in plain language, referencing at least two of her specific rooms/symptoms by name so it feels like real insight about HER, not a generic statement. This is meant to be the "aha moment" of the report.
 
-5. "closingParagraph" and "closingAffirmation": "closingParagraph" = TWO to three warm, second-person sentences tying the report together, referencing her Priority #1 area and her Strength area by name, framing the idea that tending her inner patterns and tending her home is a two-way loop. "closingAffirmation" = ONE short first-person affirmation (10-16 words) as if SHE is saying it about herself.
+5. "closingParagraph": TWO to three warm, second-person sentences tying the report together. Her Priority #1 area is "${priorityRoomLabel}" and her Strength area is "${peaceRoom}" — reference BOTH by these exact names (do not guess or pick different rooms). Frame tending her inner patterns and tending her home as a two-way loop.
+
+6. "closingAffirmation": ONE short first-person affirmation (10-16 words) as if SHE is saying it about herself.
 
 Client data:
 Name: ${name}
 Age range: ${ageBracket || "not given"}
 Has pets: ${pets || "not given"}
 Household type: ${household}
-Home Wellness Wheel scores (1-10, lower = more friction): ${JSON.stringify(homeScores)}
-Wheel of Life scores (1-10): ${JSON.stringify(lifeScores)}
-Her chosen place of peace: ${peaceRoom} — reason: "${peaceWhy}"
+Her Priority #1 (lowest-scoring) home area is: ${priorityRoomLabel} — use this exact name.
+Her lowest-scoring Wheel of Life area is: ${lowestLifeAreaLabel} — use this exact name.
+Her chosen place of peace (her Strength area): ${peaceRoom} — reason: "${peaceWhy}"
 What she wrote if her home could talk: "${houseVoice}"
 Anything else: "${additionalNotes || ""}"
 Her room-by-room observations: ${JSON.stringify(roomRaw)}
@@ -140,26 +142,28 @@ Respond with ONLY this JSON, nothing else:
 
   return `Eres el redactor de Home Wellness Organisers (Wellness Integration Method™), Brisbane, Australia. ${SHARED_VOICE.es}
 
-Con los datos de esta clienta, redacta CINCO cosas y devuélvelas en JSON puro (sin markdown, sin backticks, sin texto antes o después):
+Con los datos de esta clienta, redacta SEIS cosas y devuélvelas en JSON puro (sin markdown, sin backticks, sin texto antes o después):
 
 1. "houseMessage": Un mensaje corto (3-4 oraciones) en primera persona, como si la CASA le hablara directo a ella (segunda persona "tú"). Estructura StoryBrand: nombra el VILLANO (patrón real de sus respuestas y puntajes más bajos — específico), un giro donde la casa reconoce que no está sola (breve, sin sonar a anuncio), cierre aspiracional pero creíble. Basado en sus propias palabras cuando las dio, pero MEJORADO.
 
 2. "strengthText": UNA oración pulida, segunda persona, basada en por qué eligió "${peaceRoom}" como su lugar de paz ("${peaceWhy}").
 
-3. "lifeHomeConnection": UNA o dos oraciones, segunda persona, conectando su área de Vida con puntaje MÁS BAJO con el patrón de casa que más se relacione. Específico, sencillo, no místico.
+3. "lifeHomeConnection": UNA o dos oraciones, segunda persona, conectando "${lowestLifeAreaLabel}" (su área de Vida con puntaje más bajo — usa este nombre exacto) con "${priorityRoomLabel}" (su área de Prioridad #1 del hogar — usa este nombre exacto). Específico, sencillo, no místico — explica cómo podrían estar relacionadas.
 
 4. "patternParagraph": DOS a tres oraciones en segunda persona identificando el HILO COMÚN entre sus cuartos de mayor fricción (puntajes más bajos) — nombra el patrón compartido de fondo (ej. límites, autovalía, descanso) en lenguaje simple, mencionando al menos 2 de sus cuartos/síntomas específicos por nombre para que se sienta como un insight real sobre ELLA, no una frase genérica. Este es el "momento aha" del reporte.
 
-5. "closingParagraph" y "closingAffirmation": "closingParagraph" = DOS a tres oraciones cálidas, segunda persona, amarrando el reporte, mencionando su área de Prioridad #1 y su Fortaleza por nombre, con la idea de que trabajar en ti misma y cuidar tu casa es un ciclo de dos vías. "closingAffirmation" = UNA afirmación corta en primera persona (10-16 palabras) como si ELLA la dijera sobre sí misma.
+5. "closingParagraph": DOS a tres oraciones cálidas, segunda persona, amarrando el reporte. Su área de Prioridad #1 es "${priorityRoomLabel}" y su área de Fortaleza es "${peaceRoom}" — menciona AMBAS con estos nombres exactos (no adivines ni elijas otros cuartos). Enmarca cuidar tus patrones internos y cuidar tu casa como un ciclo de dos vías.
+
+6. "closingAffirmation": UNA afirmación corta en primera persona (10-16 palabras) como si ELLA la dijera sobre sí misma.
 
 Datos de la clienta:
 Nombre: ${name}
 Rango de edad: ${ageBracket || "no dado"}
 Tiene mascotas: ${pets || "no dado"}
 Tipo de hogar: ${household}
-Puntajes Rueda del Hogar (1-10, más bajo = más fricción): ${JSON.stringify(homeScores)}
-Puntajes Rueda de Vida (1-10): ${JSON.stringify(lifeScores)}
-Su zona de paz: ${peaceRoom} — razón: "${peaceWhy}"
+Su Prioridad #1 (puntaje más bajo) es: ${priorityRoomLabel} — usa este nombre exacto.
+Su área de Vida con puntaje más bajo es: ${lowestLifeAreaLabel} — usa este nombre exacto.
+Su zona de paz elegida (su área de Fortaleza): ${peaceRoom} — razón: "${peaceWhy}"
 Lo que escribió si su casa hablara: "${houseVoice}"
 Algo más: "${additionalNotes || ""}"
 Sus observaciones por cuarto: ${JSON.stringify(roomRaw)}
