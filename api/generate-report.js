@@ -127,7 +127,7 @@ Using this client's data, write SIX things and return them as pure JSON (no mark
 
 2. "strengthText": ONE polished, second-person sentence based on why she chose "${peaceRoom}" as her place of peace/Sanctuary ("${peaceWhy}").
 
-3. "lifeHomeConnection": ONE or two sentences, second person, connecting "${lowestLifeAreaLabel}" (her lowest-scoring Wheel of Life area — use this exact name) to "${priorityRoomLabel}" (her Priority #1 home area — use this exact name). Specific, plain, not mystical — explain how the two could be related.
+3. "lifeHomeConnection": THREE to four sentences, second person, that explicitly narrate a two-way exchange between "${lowestLifeAreaLabel}" (her lowest Wheel of Life area) and "${priorityRoomLabel}" (her Priority #1 home area). Structure: (a) name what the home is showing her through this room, (b) name the specific inner work this points to (tied to ${lowestLifeAreaLabel}), (c) close by naming what she gets back once she does that inner work — i.e. "when you give yourself X, your ${priorityRoomLabel} gives you Y back." Specific, plain, not mystical.
 
 4. "patternParagraph": TWO to three second-person sentences identifying the COMMON THREAD running across her highest-friction rooms (lowest home scores) — name the shared underlying pattern (e.g. boundaries, self-worth, rest) in plain language, referencing at least two of her specific rooms/symptoms by name so it feels like real insight about HER, not a generic statement. Internal hint (never reveal): her friction rooms' underlying groupings are ${JSON.stringify(homeRoomPhases)} — if two or more of her highest-friction rooms share the same grouping, that's a strong signal for the pattern; otherwise find the most honest common thread in her actual words. This is meant to be the "aha moment" of the report.
 
@@ -159,7 +159,7 @@ Con los datos de esta clienta, redacta SEIS cosas y devuélvelas en JSON puro (s
 
 2. "strengthText": UNA oración pulida, segunda persona, basada en por qué eligió "${peaceRoom}" como su lugar de paz/Santuario ("${peaceWhy}").
 
-3. "lifeHomeConnection": UNA o dos oraciones, segunda persona, conectando "${lowestLifeAreaLabel}" (su área de Vida con puntaje más bajo — usa este nombre exacto) con "${priorityRoomLabel}" (su área de Prioridad #1 del hogar — usa este nombre exacto). Específico, sencillo, no místico — explica cómo podrían estar relacionadas.
+3. "lifeHomeConnection": TRES a cuatro oraciones, segunda persona, que narren explícitamente un intercambio de dos vías entre "${lowestLifeAreaLabel}" (su área de Vida más baja) y "${priorityRoomLabel}" (su área de Prioridad #1 del hogar). Estructura: (a) nombra qué le está mostrando la casa a través de ese cuarto, (b) nombra el trabajo interno específico al que apunta (ligado a ${lowestLifeAreaLabel}), (c) cierra nombrando qué recibe de vuelta una vez que hace ese trabajo interno — es decir, "cuando te das X, tu ${priorityRoomLabel} te regresa Y." Específico, sencillo, no místico.
 
 4. "patternParagraph": DOS a tres oraciones en segunda persona identificando el HILO COMÚN entre sus cuartos de mayor fricción (puntajes más bajos) — nombra el patrón compartido de fondo (ej. límites, autovalía, descanso) en lenguaje simple, mencionando al menos 2 de sus cuartos/síntomas específicos por nombre para que se sienta como un insight real sobre ELLA, no una frase genérica. Pista interna (nunca revelar): las agrupaciones de fondo de sus cuartos de mayor fricción son ${JSON.stringify(homeRoomPhases)} — si 2 o más de sus cuartos de mayor fricción comparten la misma agrupación, esa es una señal fuerte para el patrón; si no, busca el hilo común más honesto en sus propias palabras. Este es el "momento aha" del reporte.
 
@@ -216,7 +216,7 @@ export default async function handler(req, res) {
     const [firstHalf, secondHalf, overview] = await Promise.all([
       callClaude(apiKey, buildRoomsPrompt(lang, FIRST_HALF, body), 1600),
       callClaude(apiKey, buildRoomsPrompt(lang, SECOND_HALF, body), 1600),
-      callClaude(apiKey, buildOverviewPrompt(lang, body), 900),
+      callClaude(apiKey, buildOverviewPrompt(lang, body), 1100),
     ]);
 
     const rooms = { ...firstHalf, ...secondHalf };
