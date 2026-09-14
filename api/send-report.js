@@ -173,7 +173,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "No client email provided." });
   }
 
-  const from = "Home Wellness Organisers <onboarding@resend.dev>";
+  const from = "Home Wellness Organisers <reports@homeasmirror.com>";
   const clientSubject = lang === "en" ? "Your Home Wellness Report" : "Tu Reporte de Bienestar en el Hogar";
   const adminSubject = `${lang === "en" ? "New submission" : "Nueva respuesta"}: ${body.name || "?"}`;
 
