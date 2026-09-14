@@ -108,8 +108,9 @@ function buildClientEmailHtml(lang, data) {
 }
 
 function buildAdminEmailHtml(lang, data) {
-  const { name, email, ageBracket, pets, household, peaceRoom, peaceWhy, houseVoice, additionalNotes, homeWheel, lifeWheel, roomRaw } = data;
+  const { name, email, ageBracket, pets, household, peaceRoom, peaceWhy, houseVoice, additionalNotes, homeWheel, lifeWheel, roomRaw, stage } = data;
   const isEn = lang === "en";
+  const isFreeLead = stage === "free";
 
   const rows = (items) => `<ul style="font-family:sans-serif; color:#333; padding-left:18px;">
     ${(items || []).map(i => `<li>${escapeHtml(i.label)}: <b>${i.score}/10</b></li>`).join("")}
@@ -120,9 +121,20 @@ function buildAdminEmailHtml(lang, data) {
     return `<p style="font-family:sans-serif; margin:4px 0;"><b>${escapeHtml(k)}:</b> ${escapeHtml((roomRaw && roomRaw[k]) || "\u2014")}${mood ? ` <i>(${isEn ? "mood" : "sentimiento"}: ${escapeHtml(mood)})</i>` : ""}</p>`;
   }).join("");
 
+  const statusBanner = isFreeLead
+    ? `<div style="background:#F6EAD1; padding:10px 16px; border-radius:4px; margin-bottom:16px; font-family:sans-serif; color:#333;"><b>${isEn ? "STATUS: Free Mini Diagnosis only \u2014 has NOT purchased the Full Report yet." : "ESTADO: Solo Mini Diagn\u00f3stico gratuito \u2014 A\u00daN NO ha comprado el Reporte Completo."}</b></div>`
+    : `<div style="background:#E7EEE3; padding:10px 16px; border-radius:4px; margin-bottom:16px; font-family:sans-serif; color:#333;"><b>${isEn ? "STATUS: Purchased the Full Report." : "ESTADO: Compr\u00f3 el Reporte Completo."}</b></div>`;
+
+  const deepRootsSection = isFreeLead
+    ? `<p style="font-family:sans-serif; color:#999; font-style:italic;">${isEn ? "Phase 4 (Deep Roots) not completed \u2014 she hasn't unlocked the Full Report yet." : "Fase 4 (Ra\u00edces Profundas) sin completar \u2014 a\u00fan no desbloque\u00f3 el Reporte Completo."}</p>`
+    : `<p style="font-family:sans-serif; color:#333;"><b>${isEn ? "Place of peace" : "Zona de paz"}:</b> ${escapeHtml(peaceRoom)} — ${escapeHtml(peaceWhy)}</p>
+       <p style="font-family:sans-serif; color:#333;"><b>${isEn ? "If her home could talk" : "Si su casa le hablara"}:</b> ${escapeHtml(houseVoice)}</p>
+       <p style="font-family:sans-serif; color:#333;"><b>${isEn ? "Anything else" : "Algo m\u00e1s"}:</b> ${escapeHtml(additionalNotes)}</p>`;
+
   return `
   <div style="max-width:600px; margin:0 auto; font-family:sans-serif;">
-    <h1 style="color:#716D71;">${isEn ? "Raw submission — " : "Respuestas crudas — "}${escapeHtml(name)}</h1>
+    <h1 style="color:#716D71;">${isEn ? "Submission — " : "Respuesta — "}${escapeHtml(name)}</h1>
+    ${statusBanner}
     <p style="color:#333;"><b>Email:</b> ${escapeHtml(email)}</p>
     <p style="color:#333;"><b>${isEn ? "Age" : "Edad"}:</b> ${escapeHtml(ageBracket)} | <b>${isEn ? "Pets" : "Mascotas"}:</b> ${escapeHtml(pets)} | <b>${isEn ? "Household" : "Hogar"}:</b> ${escapeHtml(household)}</p>
 
@@ -135,9 +147,7 @@ function buildAdminEmailHtml(lang, data) {
     ${rawHtml}
 
     <h2 style="color:#96BC78; font-size:16px; margin-top:16px;">${isEn ? "Deep Roots (Phase 4)" : "Raíces Profundas (Fase 4)"}</h2>
-    <p style="font-family:sans-serif; color:#333;"><b>${isEn ? "Place of peace" : "Zona de paz"}:</b> ${escapeHtml(peaceRoom)} — ${escapeHtml(peaceWhy)}</p>
-    <p style="font-family:sans-serif; color:#333;"><b>${isEn ? "If her home could talk" : "Si su casa le hablara"}:</b> ${escapeHtml(houseVoice)}</p>
-    <p style="font-family:sans-serif; color:#333;"><b>${isEn ? "Anything else" : "Algo más"}:</b> ${escapeHtml(additionalNotes)}</p>
+    ${deepRootsSection}
   </div>`;
 }
 
@@ -174,11 +184,16 @@ export default async function handler(req, res) {
   }
 
   const from = "Home Wellness Organisers <reports@homeasmirror.com>";
+  const isFreeLead = body.stage === "free";
   const clientSubject = lang === "en" ? "Your Home Wellness Report" : "Tu Reporte de Bienestar en el Hogar";
-  const adminSubject = `${lang === "en" ? "New submission" : "Nueva respuesta"}: ${body.name || "?"}`;
+  const adminSubject = isFreeLead
+    ? `${lang === "en" ? "New free lead" : "Nuevo lead (gratis)"}: ${body.name || "?"}`
+    : `${lang === "en" ? "New purchase" : "Nueva compra"}: ${body.name || "?"}`;
 
   try {
-    await sendViaResend(apiKey, from, [email], clientSubject, buildClientEmailHtml(lang, body));
+    if (!isFreeLead) {
+      await sendViaResend(apiKey, from, [email], clientSubject, buildClientEmailHtml(lang, body));
+    }
 
     if (notifyEmail) {
       try {
