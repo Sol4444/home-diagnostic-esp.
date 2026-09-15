@@ -25,7 +25,10 @@ No necesitas saber programar para hacer esto. Sigue los pasos en orden.
 2. En el campo "Name" escribe exactamente: `ANTHROPIC_API_KEY`
 3. En el campo "Value", pega la clave que guardaste de console.anthropic.com (la que empieza con `sk-ant-...`).
 4. Da clic en "Add".
-5. Ahora sí, da clic en "Deploy".
+5. Repite lo mismo para 2 variables más:
+   - Name: `RESEND_API_KEY` — Value: tu clave de resend.com (la que empieza con `re_...`)
+   - Name: `NOTIFY_EMAIL` — Value: tu correo, donde quieres recibir copia de cada reporte generado
+6. Ahora sí, da clic en "Deploy".
 
 ## Paso 4 — Pruébalo
 
