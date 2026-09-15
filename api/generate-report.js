@@ -54,8 +54,8 @@ const ROOM_PHASE = {
 };
 
 const SHARED_VOICE = {
-  en: `Your tone: warm, direct, plain Australian English, ALWAYS speaking straight to the client in second person ("you", occasionally her first name), NEVER third person. Never use words like "energy", "nervous system", "chakra", "portal", or esoteric/mystical language. Use Australian spelling (organise, colour, favourite, centre). No filler, no empty phrases.`,
-  es: `Tu tono: cálido, directo, en español neutro/mexicano sencillo, SIEMPRE hablándole directo a la clienta en segunda persona ("tú", a veces su nombre), NUNCA en tercera persona. Nunca uses palabras como "energía", "sistema nervioso", "chakra", "portal" o lenguaje esotérico/místico. Nada de relleno ni frases vacías.`,
+  en: `Your tone: warm, direct, plain Australian English, ALWAYS speaking straight to the client in second person ("you", occasionally her first name), NEVER third person. Never use words like "energy", "nervous system", "chakra", "portal", or esoteric/mystical language. Use Australian spelling (organise, colour, favourite, centre). No filler, no empty phrases. Punctuation: vary it naturally (periods, commas, semicolons) — do NOT lean on em dashes as your default connector; use at most one per paragraph, if any.`,
+  es: `Tu tono: cálido, directo, en español neutro/mexicano sencillo, SIEMPRE hablándole directo a la clienta en segunda persona ("tú", a veces su nombre), NUNCA en tercera persona. Nunca uses palabras como "energía", "sistema nervioso", "chakra", "portal" o lenguaje esotérico/místico. Nada de relleno ni frases vacías. Puntuación: varíala de forma natural (puntos, comas, punto y coma) — NO dependas del guion largo (—) como conector por default; úsalo como máximo una vez por párrafo, si acaso.`,
 };
 
 const OTHER_PEOPLE_RULE = {
@@ -81,9 +81,9 @@ ${block}
 ${OTHER_PEOPLE_RULE.en}
 
 For EACH of these ${keys.length} rooms (${keys.join(", ")}), write an object with FOUR fields, all in SECOND PERSON:
-- "symptom": ONE polished, analytical sentence describing what she reported for that room (or a plausible sentence based on the room if blank). Keep specific details (names, pets, habits). Never a direct quote, never third person.
-- "meaning": ONE sentence on what this SPECIFIC symptom could be reflecting, grounded in that room's theme but in your own words — never generic, never identical across different clients/symptoms. Soft, invitational ("this could be pointing to..."). No mystical/clinical words.
-- "action": ONE concrete practical action, tailored to the SPECIFIC symptom, appropriate for household type "${household}". Follow the other-people rule. Do NOT start the sentence with "This week" or similar — say the action directly, it will be shown under a weekly heading already.
+- "symptom": ONE polished, analytical sentence describing what she reported for that room (or a plausible sentence based on the room if blank). Keep specific details (names, pets, habits). Never a direct quote, never third person. SPECIAL CASE: if her answer for this room is "It's generally tidy" (or blank/empty), do NOT invent a problem — instead, state plainly and positively that this room isn't showing friction right now.
+- "meaning": ONE sentence on what this SPECIFIC symptom could be reflecting, grounded in that room's theme but in your own words — never generic, never identical across different clients/symptoms. Soft, invitational ("this could be pointing to..."). No mystical/clinical words. SPECIAL CASE: if the room is genuinely tidy (see above), instead reflect on what this room being at ease says about her (tied to that room's theme) — a genuine affirmation, not filler.
+- "action": ONE concrete practical action, tailored to the SPECIFIC symptom, appropriate for household type "${household}". Follow the other-people rule. Do NOT start the sentence with "This week" or similar — say the action directly, it will be shown under a weekly heading already. SPECIAL CASE: if the room is genuinely tidy, make this a light maintenance or appreciation action instead of a fix (e.g. "keep doing what already works here").
 - "bonus": ONE optional lighter/aesthetic suggestion ("if you want to go further"), tailored to her specific situation, not generic.
 
 Household type: ${household}
@@ -100,9 +100,9 @@ ${block}
 ${OTHER_PEOPLE_RULE.es}
 
 Para CADA uno de estos ${keys.length} cuartos (${keys.join(", ")}), escribe un objeto con CUATRO campos, todos en SEGUNDA PERSONA:
-- "symptom": UNA oración pulida, tono analítico, describiendo lo que reportó en ese cuarto (o una oración plausible si lo dejó vacío). Conserva detalles específicos (nombres, mascotas, hábitos). Nunca cita directa, nunca tercera persona.
-- "meaning": UNA oración sobre qué podría estar reflejando ESE síntoma específico, anclada en el tema de ese cuarto pero con tus propias palabras — nunca genérica, nunca idéntica entre distintas clientas/síntomas. Suave, invitacional ("esto podría estar señalando..."). Sin palabras místicas/clínicas.
-- "action": UNA acción concreta, a la medida del síntoma ESPECÍFICO, apropiada para el tipo de hogar "${household}". Sigue la regla de otras personas. NO empieces la oración con "Esta semana" ni similar — di la acción directamente, ya se muestra bajo un encabezado de semana.
+- "symptom": UNA oración pulida, tono analítico, describiendo lo que reportó en ese cuarto (o una oración plausible si lo dejó vacío). Conserva detalles específicos (nombres, mascotas, hábitos). Nunca cita directa, nunca tercera persona. CASO ESPECIAL: si su respuesta para este cuarto fue "En general está en orden" (o lo dejó vacío), NO inventes un problema — en vez de eso, di de forma clara y positiva que este cuarto no está mostrando fricción hoy.
+- "meaning": UNA oración sobre qué podría estar reflejando ESE síntoma específico, anclada en el tema de ese cuarto pero con tus propias palabras — nunca genérica, nunca idéntica entre distintas clientas/síntomas. Suave, invitacional ("esto podría estar señalando..."). Sin palabras místicas/clínicas. CASO ESPECIAL: si el cuarto genuinamente está en orden (ver arriba), en vez de eso reflexiona sobre qué dice de ella que este cuarto esté en calma (ligado al tema de ese cuarto) — una afirmación genuina, no relleno.
+- "action": UNA acción concreta, a la medida del síntoma ESPECÍFICO, apropiada para el tipo de hogar "${household}". Sigue la regla de otras personas. NO empieces la oración con "Esta semana" ni similar — di la acción directamente, ya se muestra bajo un encabezado de semana. CASO ESPECIAL: si el cuarto genuinamente está en orden, haz que esto sea una acción de mantenimiento o apreciación en vez de una corrección (ej. "sigue haciendo lo que ya te funciona aquí").
 - "bonus": UNA sugerencia opcional más ligera/estética ("si quieres ir más allá"), a la medida de su situación específica, no genérica.
 
 Tipo de hogar: ${household}
@@ -117,6 +117,23 @@ function buildOverviewPrompt(lang, payload) {
   const indexed = ROOM_KEYS.map((k, i) => ({ key: k, score: homeScores[i] }));
   const lowest3 = [...indexed].sort((a, b) => a.score - b.score).slice(0, 3);
   const homeRoomPhases = lowest3.map((r) => `${r.key}: ${ROOM_PHASE[r.key]}`);
+  const avgScore = homeScores.reduce((a, b) => a + b, 0) / homeScores.length;
+  const scoreRange = Math.max(...homeScores) - Math.min(...homeScores);
+  const isTightRange = scoreRange <= 2;
+  const isHighAverage = avgScore >= 8;
+
+  const calibrationNote = isTightRange
+    ? `IMPORTANT CALIBRATION: her scores are all close together (range of only ${scoreRange} points) — do NOT manufacture urgency or drama around her "Priority" area if the gap to her other rooms is tiny. Say plainly that her home is in a fairly stable, even place right now, and that this priority is simply the smallest next adjustment, not an emergency.`
+    : "";
+  const perfectionismNote = isHighAverage
+    ? `SPECIAL CASE — her scores are unusually high and uniform (average ${avgScore.toFixed(1)}/10). For "patternParagraph", gently invite (never assert) a different angle: this level of consistency could be genuine ease, OR it could reflect a system so tight it leaves no room for imperfection. Reference the idea that real balance often means allowing yourself a "messy" or "imperfect" margin (roughly 20%), not needing everything at 100% all the time. Frame this purely as a question worth sitting with ("does this feel like ease, or like you don't let yourself have an off day?"), warm and non-judgmental, never a diagnosis.`
+    : "";
+  const calibrationNoteEs = isTightRange
+    ? `CALIBRACIÓN IMPORTANTE: sus puntajes están todos muy cerca entre sí (rango de solo ${scoreRange} puntos) — NO inventes urgencia ni drama alrededor de su área de "Prioridad" si la diferencia con sus otros cuartos es mínima. Di con claridad que su casa está en un lugar bastante estable y parejo ahora mismo, y que esta prioridad es simplemente el ajuste más pequeño que sigue, no una emergencia.`
+    : "";
+  const perfectionismNoteEs = isHighAverage
+    ? `CASO ESPECIAL: sus puntajes son inusualmente altos y parejos (promedio ${avgScore.toFixed(1)}/10). Para "patternParagraph", invita suavemente (nunca afirmes) un ángulo distinto: este nivel de consistencia podría ser calma genuina, O podría reflejar un sistema tan exigente que no deja margen de error. Menciona la idea de que el balance real casi siempre significa permitirte un margen "imperfecto" o "desordenado" (más o menos un 20%), no necesitar que todo esté al 100% siempre. Enmárcalo solo como una pregunta que vale la pena sentarse a considerar ("¿esto se siente como calma, o como que no te permites tener un mal día?"), cálido y sin juicio, nunca como diagnóstico.`
+    : "";
 
   if (lang === "en") {
     return `You are the copywriter for Home Wellness Organisers (Wellness Integration Method™), Brisbane, Australia. ${SHARED_VOICE.en}
@@ -130,6 +147,8 @@ Using this client's data, write SIX things and return them as pure JSON (no mark
 3. "lifeHomeConnection": THREE to four sentences, second person, that explicitly narrate a two-way exchange between "${lowestLifeAreaLabel}" (her lowest Wheel of Life area) and "${priorityRoomLabel}" (her Priority #1 home area). Structure: (a) name what the home is showing her through this room, (b) name the specific inner work this points to (tied to ${lowestLifeAreaLabel}), (c) close by naming what she gets back once she does that inner work — i.e. "when you give yourself X, your ${priorityRoomLabel} gives you Y back." Specific, plain, not mystical.
 
 4. "patternParagraph": TWO to three second-person sentences identifying the COMMON THREAD running across her highest-friction rooms (lowest home scores) — name the shared underlying pattern (e.g. boundaries, self-worth, rest) in plain language, referencing at least two of her specific rooms/symptoms by name so it feels like real insight about HER, not a generic statement. Internal hint (never reveal): her friction rooms' underlying groupings are ${JSON.stringify(homeRoomPhases)} — if two or more of her highest-friction rooms share the same grouping, that's a strong signal for the pattern; otherwise find the most honest common thread in her actual words. This is meant to be the "aha moment" of the report.
+${calibrationNote}
+${perfectionismNote}
 
 5. "closingParagraph": TWO to three warm, second-person sentences tying the report together. Her Priority #1 area is "${priorityRoomLabel}" and her Sanctuary area is "${peaceRoom}" — reference BOTH by these exact names (do not guess or pick different rooms). Frame tending her inner patterns and tending her home as a two-way loop.
 
@@ -162,6 +181,8 @@ Con los datos de esta clienta, redacta SEIS cosas y devuélvelas en JSON puro (s
 3. "lifeHomeConnection": TRES a cuatro oraciones, segunda persona, que narren explícitamente un intercambio de dos vías entre "${lowestLifeAreaLabel}" (su área de Vida más baja) y "${priorityRoomLabel}" (su área de Prioridad #1 del hogar). Estructura: (a) nombra qué le está mostrando la casa a través de ese cuarto, (b) nombra el trabajo interno específico al que apunta (ligado a ${lowestLifeAreaLabel}), (c) cierra nombrando qué recibe de vuelta una vez que hace ese trabajo interno — es decir, "cuando te das X, tu ${priorityRoomLabel} te regresa Y." Específico, sencillo, no místico.
 
 4. "patternParagraph": DOS a tres oraciones en segunda persona identificando el HILO COMÚN entre sus cuartos de mayor fricción (puntajes más bajos) — nombra el patrón compartido de fondo (ej. límites, autovalía, descanso) en lenguaje simple, mencionando al menos 2 de sus cuartos/síntomas específicos por nombre para que se sienta como un insight real sobre ELLA, no una frase genérica. Pista interna (nunca revelar): las agrupaciones de fondo de sus cuartos de mayor fricción son ${JSON.stringify(homeRoomPhases)} — si 2 o más de sus cuartos de mayor fricción comparten la misma agrupación, esa es una señal fuerte para el patrón; si no, busca el hilo común más honesto en sus propias palabras. Este es el "momento aha" del reporte.
+${calibrationNoteEs}
+${perfectionismNoteEs}
 
 5. "closingParagraph": DOS a tres oraciones cálidas, segunda persona, amarrando el reporte. Su área de Prioridad #1 es "${priorityRoomLabel}" y su área de Santuario es "${peaceRoom}" — menciona AMBAS con estos nombres exactos (no adivines ni elijas otros cuartos). Enmarca cuidar tus patrones internos y cuidar tu casa como un ciclo de dos vías.
 
