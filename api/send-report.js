@@ -198,6 +198,10 @@ export default async function handler(req, res) {
     if (notifyEmail) {
       try {
         await sendViaResend(apiKey, from, [notifyEmail], adminSubject, buildAdminEmailHtml(lang, body));
+        if (!isFreeLead) {
+          const copySubject = `${lang === "en" ? "Full Report copy" : "Copia del Reporte Completo"} — ${body.name || "?"}`;
+          await sendViaResend(apiKey, from, [notifyEmail], copySubject, buildClientEmailHtml(lang, body));
+        }
       } catch (e) {
         console.error("Admin email failed (client email still sent):", e);
       }
