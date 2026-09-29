@@ -62,15 +62,6 @@ function buildClientEmailHtml(lang, data) {
       <p style="font-family:sans-serif; color:#96BC78; font-style:italic; font-size:14px; margin:8px 0 0;">${escapeHtml(r.selfLine)}</p>
     </div>`).join("");
 
-  const tipsHtml = ROOM_KEYS.map((k) => {
-    const room = (rooms || []).find((r) => r.key === k);
-    const label = room ? room.label : k;
-    return `<div style="margin-bottom:14px;"><h4 style="margin:0 0 4px; font-family:sans-serif; color:#716D71;">${escapeHtml(label)}</h4>
-      <ul style="font-family:sans-serif; color:#333; padding-left:18px; margin:0;">
-        ${(TIPS[lang][k] || []).map((t) => `<li style="margin-bottom:3px;">${escapeHtml(t)}</li>`).join("")}
-      </ul></div>`;
-  }).join("");
-
   return `
   <div style="max-width:600px; margin:0 auto; font-family:sans-serif;">
     <h1 style="color:#716D71;">${labels.title}</h1>
@@ -100,9 +91,33 @@ function buildClientEmailHtml(lang, data) {
     ${closingParagraph ? `<p style="color:#333;">${escapeHtml(closingParagraph)}</p>` : ""}
     ${closingAffirmation ? `<p style="font-style:italic; text-align:center; color:#96BC78; font-size:16px; margin:16px 0;">"${escapeHtml(closingAffirmation)}"</p>` : ""}
 
-    <h2 style="color:#716D71; font-size:18px; margin-top:28px; border-top:2px solid #F6EAD1; padding-top:16px;">${labels.tipsH}</h2>
-    ${tipsHtml}
+    <p style="color:#999; font-style:italic; margin-top:24px;">${labels.closing}</p>
+  </div>`;
+}
 
+function buildTipsEmailHtml(lang, data) {
+  const { name, rooms } = data;
+  const isEn = lang === "en";
+
+  const labels = isEn
+    ? { title: "Your Quick Guide — 3 tips per room", intro: "Here's your bonus quick-reference guide from your Home Wellness Report: 3 practical tips for each space in your home, all in one place.", closing: "With care, Sol · Home Wellness Organisers" }
+    : { title: "Tu Guía Rápida — 3 tips por espacio", intro: "Aquí está tu guía rápida de bono de tu Reporte de Bienestar en el Hogar: 3 tips prácticos para cada espacio de tu casa, todos en un solo lugar.", closing: "Con cariño, Sol · Home Wellness Organisers" };
+
+  const tipsHtml = ROOM_KEYS.map((k) => {
+    const room = (rooms || []).find((r) => r.key === k);
+    const label = room ? room.label : k;
+    return `<div style="margin-bottom:14px;"><h4 style="margin:0 0 4px; font-family:sans-serif; color:#716D71;">${escapeHtml(label)}</h4>
+      <ul style="font-family:sans-serif; color:#333; padding-left:18px; margin:0;">
+        ${(TIPS[lang][k] || []).map((t) => `<li style="margin-bottom:3px;">${escapeHtml(t)}</li>`).join("")}
+      </ul></div>`;
+  }).join("");
+
+  return `
+  <div style="max-width:600px; margin:0 auto; font-family:sans-serif;">
+    <h1 style="color:#716D71;">${labels.title}</h1>
+    <p style="color:#716D71;">${isEn ? "Hi" : "Hola"} ${escapeHtml(name)},</p>
+    <p style="color:#333;">${labels.intro}</p>
+    ${tipsHtml}
     <p style="color:#999; font-style:italic; margin-top:24px;">${labels.closing}</p>
   </div>`;
 }
@@ -193,6 +208,8 @@ export default async function handler(req, res) {
   try {
     if (!isFreeLead) {
       await sendViaResend(apiKey, from, [email], clientSubject, buildClientEmailHtml(lang, body));
+      const tipsSubject = lang === "en" ? "Your Quick Guide (bonus)" : "Tu Guía Rápida (bono)";
+      await sendViaResend(apiKey, from, [email], tipsSubject, buildTipsEmailHtml(lang, body));
     }
 
     if (notifyEmail) {

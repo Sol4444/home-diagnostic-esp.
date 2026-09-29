@@ -63,14 +63,21 @@ const OTHER_PEOPLE_RULE = {
   es: `IMPORTANTE — cómo escribir acciones que involucran a otras personas (pareja, hijos, familia): NUNCA asumas que ya hubo una conversación, y NUNCA le dictes exactamente qué decirle a alguien más. En vez de eso, invítala suavemente a reflexionar sobre su propia capacidad de pedir con claridad lo que necesita (asertividad, límites) — sin presumir, sin sonar mandón ni entrometido en sus relaciones.`,
 };
 
-function roomsBlock(lang, keys, roomRaw) {
+function roomsBlock(lang, keys, roomRaw, homeScores) {
   const themes = ROOM_THEMES[lang];
-  return keys.map((k) => `- ${k}: theme = ${themes[k].theme}. Calibration example only (never copy) — a client with "${themes[k].exampleMess}" might read as "${themes[k].exampleMessage}". Her actual answer for this room: "${(roomRaw && roomRaw[k]) || "(left blank)"}"`).join("\n");
+  return keys.map((k) => {
+    const idx = ROOM_KEYS.indexOf(k);
+    const score = (homeScores && homeScores[idx] !== undefined) ? homeScores[idx] : null;
+    const scoreLine = score !== null
+      ? (lang === "en" ? ` Her load score for this room (1=drains her, 10=supports her): ${score}/10.` : ` Su puntaje de carga para este cuarto (1=la agota, 10=la sostiene): ${score}/10.`)
+      : "";
+    return `- ${k}: theme = ${themes[k].theme}. Calibration example only (never copy) — a client with "${themes[k].exampleMess}" might read as "${themes[k].exampleMessage}". Her actual answer for this room: "${(roomRaw && roomRaw[k]) || "(left blank)"}"${scoreLine}`;
+  }).join("\n");
 }
 
 function buildRoomsPrompt(lang, keys, payload) {
-  const { household, roomRaw } = payload;
-  const block = roomsBlock(lang, keys, roomRaw);
+  const { household, roomRaw, homeScores } = payload;
+  const block = roomsBlock(lang, keys, roomRaw, homeScores);
 
   if (lang === "en") {
     return `You are the copywriter for Home Wellness Organisers (Wellness Integration Method™), Brisbane, Australia. ${SHARED_VOICE.en}
@@ -81,9 +88,9 @@ ${block}
 ${OTHER_PEOPLE_RULE.en}
 
 For EACH of these ${keys.length} rooms (${keys.join(", ")}), write an object with FOUR fields, all in SECOND PERSON:
-- "symptom": ONE polished, analytical sentence describing what she reported for that room (or a plausible sentence based on the room if blank). Keep specific details (names, pets, habits). Never a direct quote, never third person. SPECIAL CASE: if her answer for this room is "It's generally tidy" (or blank/empty), do NOT invent a problem — instead, state plainly and positively that this room isn't showing friction right now.
-- "meaning": ONE sentence on what this SPECIFIC symptom could be reflecting, grounded in that room's theme but in your own words — never generic, never identical across different clients/symptoms. Soft, invitational ("this could be pointing to..."). No mystical/clinical words. SPECIAL CASE: if the room is genuinely tidy (see above), instead reflect on what this room being at ease says about her (tied to that room's theme) — a genuine affirmation, not filler.
-- "action": ONE concrete practical action, tailored to the SPECIFIC symptom, appropriate for household type "${household}". Follow the other-people rule. Do NOT start the sentence with "This week" or similar — say the action directly, it will be shown under a weekly heading already. SPECIAL CASE: if the room is genuinely tidy, make this a light maintenance or appreciation action instead of a fix (e.g. "keep doing what already works here").
+- "symptom": ONE polished, analytical sentence describing what she reported for that room (or a plausible sentence based on the room if blank). Keep specific details (names, pets, habits). Never a direct quote, never third person. The load score for this room is your source of truth about how it actually feels to live with — treat her checklist answer as what's visible, and her score as how it feels. SPECIAL CASE: only if her answer is "It's generally tidy" (or blank) AND her load score is 6 or higher, do NOT invent a problem — instead, state plainly and positively that this room isn't showing friction right now. If her answer is "tidy"/blank but her score is 5 or lower, do NOT default to a positive read — name that even without an obvious mess, something about this room still isn't fully working for her (tie it to the room's theme, not a made-up physical symptom).
+- "meaning": ONE sentence on what this SPECIFIC symptom could be reflecting, grounded in that room's theme but in your own words — never generic, never identical across different clients/symptoms. Soft, invitational ("this could be pointing to..."). No mystical/clinical words. Must stay consistent with the load score (a low score should never be paired with a purely celebratory meaning, and vice versa). SPECIAL CASE: only apply the affirming/at-ease framing when the tidy-special-case above genuinely applies (score 6+).
+- "action": ONE concrete practical action, tailored to the SPECIFIC symptom AND consistent with the load score, appropriate for household type "${household}". Follow the other-people rule. Do NOT start the sentence with "This week" or similar — say the action directly, it will be shown under a weekly heading already. SPECIAL CASE: only make this a light maintenance/appreciation action when the tidy-special-case above genuinely applies (score 6+); otherwise give a real, gentle next step.
 - "bonus": ONE optional lighter/aesthetic suggestion ("if you want to go further"), tailored to her specific situation, not generic.
 
 Household type: ${household}
@@ -100,9 +107,9 @@ ${block}
 ${OTHER_PEOPLE_RULE.es}
 
 Para CADA uno de estos ${keys.length} cuartos (${keys.join(", ")}), escribe un objeto con CUATRO campos, todos en SEGUNDA PERSONA:
-- "symptom": UNA oración pulida, tono analítico, describiendo lo que reportó en ese cuarto (o una oración plausible si lo dejó vacío). Conserva detalles específicos (nombres, mascotas, hábitos). Nunca cita directa, nunca tercera persona. CASO ESPECIAL: si su respuesta para este cuarto fue "En general está en orden" (o lo dejó vacío), NO inventes un problema — en vez de eso, di de forma clara y positiva que este cuarto no está mostrando fricción hoy.
-- "meaning": UNA oración sobre qué podría estar reflejando ESE síntoma específico, anclada en el tema de ese cuarto pero con tus propias palabras — nunca genérica, nunca idéntica entre distintas clientas/síntomas. Suave, invitacional ("esto podría estar señalando..."). Sin palabras místicas/clínicas. CASO ESPECIAL: si el cuarto genuinamente está en orden (ver arriba), en vez de eso reflexiona sobre qué dice de ella que este cuarto esté en calma (ligado al tema de ese cuarto) — una afirmación genuina, no relleno.
-- "action": UNA acción concreta, a la medida del síntoma ESPECÍFICO, apropiada para el tipo de hogar "${household}". Sigue la regla de otras personas. NO empieces la oración con "Esta semana" ni similar — di la acción directamente, ya se muestra bajo un encabezado de semana. CASO ESPECIAL: si el cuarto genuinamente está en orden, haz que esto sea una acción de mantenimiento o apreciación en vez de una corrección (ej. "sigue haciendo lo que ya te funciona aquí").
+- "symptom": UNA oración pulida, tono analítico, describiendo lo que reportó en ese cuarto (o una oración plausible si lo dejó vacío). Conserva detalles específicos (nombres, mascotas, hábitos). Nunca cita directa, nunca tercera persona. El puntaje de carga de este cuarto es tu fuente de verdad sobre cómo se siente vivir con él realmente — trata su respuesta de la lista como lo visible, y su puntaje como lo que se siente. CASO ESPECIAL: solo si su respuesta es "En general está en orden" (o vacío) Y su puntaje de carga es 6 o más, NO inventes un problema — en vez de eso, di de forma clara y positiva que este cuarto no está mostrando fricción hoy. Si su respuesta es "en orden"/vacío pero su puntaje es 5 o menos, NO uses por default una lectura positiva — señala que, aunque no haya un desorden evidente, algo en ese cuarto todavía no le está funcionando del todo (ligado al tema del cuarto, no a un síntoma físico inventado).
+- "meaning": UNA oración sobre qué podría estar reflejando ESE síntoma específico, anclada en el tema de ese cuarto pero con tus propias palabras — nunca genérica, nunca idéntica entre distintas clientas/síntomas. Suave, invitacional ("esto podría estar señalando..."). Sin palabras místicas/clínicas. Debe ser consistente con el puntaje de carga (un puntaje bajo nunca debe ir con un significado puramente celebratorio, y viceversa). CASO ESPECIAL: solo usa el marco de afirmación/calma cuando el caso especial de "en orden" arriba realmente aplique (puntaje 6+).
+- "action": UNA acción concreta, a la medida del síntoma ESPECÍFICO Y consistente con el puntaje de carga, apropiada para el tipo de hogar "${household}". Sigue la regla de otras personas. NO empieces la oración con "Esta semana" ni similar — di la acción directamente, ya se muestra bajo un encabezado de semana. CASO ESPECIAL: solo haz que esto sea una acción de mantenimiento/apreciación cuando el caso especial de arriba realmente aplique (puntaje 6+); si no, da un siguiente paso real y amable.
 - "bonus": UNA sugerencia opcional más ligera/estética ("si quieres ir más allá"), a la medida de su situación específica, no genérica.
 
 Tipo de hogar: ${household}
