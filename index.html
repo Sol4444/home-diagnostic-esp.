@@ -586,6 +586,7 @@ function restoreFromCheckout() {
   if (!saved) return;
 
   setLang(saved.lang || 'es');
+  document.getElementById('contextSection').style.display = 'none';
 
   document.getElementById('nameInput').value = saved.name || '';
   document.getElementById('emailInput').value = saved.email || '';
