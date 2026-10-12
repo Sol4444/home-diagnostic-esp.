@@ -55,7 +55,7 @@ const ROOM_PHASE = {
 
 const SHARED_VOICE = {
   en: `Your tone: warm, direct, plain Australian English, ALWAYS speaking straight to the client in second person ("you", occasionally her first name), NEVER third person. Never use words like "energy", "nervous system", "chakra", "portal", or esoteric/mystical language. Use Australian spelling (organise, colour, favourite, centre). No filler, no empty phrases. STRICT PUNCTUATION RULE: NEVER use the em dash (—) or en dash (–) anywhere, for any reason, even once. Wherever you would naturally reach for one, use a comma instead (or a period and a new sentence, or "and"/"but" — whichever reads most naturally). This is a hard rule, not a stylistic preference: re-read your own sentences before finalising and rewrite any with a dash. NO NUMBERS FROM HER SCORES: never write her scores or phrases like "3 out of 10" in your text, because the score is already shown next to your text. GENDER: never assume or mention the client's gender, and never refer to people in general by gender (no "woman", "women", "mum", "wife", "ladies").`,
-  es: `Tu tono: cálido, directo, en español neutro/mexicano sencillo, SIEMPRE hablándole directo a la clienta en segunda persona ("tú", a veces su nombre), NUNCA en tercera persona. Nunca uses palabras como "energía", "sistema nervioso", "chakra", "portal" o lenguaje esotérico/místico. Nada de relleno ni frases vacías. REGLA ESTRICTA DE PUNTUACIÓN: NUNCA uses el guion largo (—) ni el guion medio como conector (–), en ningún caso, ni una sola vez. Donde normalmente usarías uno, usa una coma en su lugar (o un punto y una oración nueva, o "y"/"pero", lo que suene más natural). Esta es una regla dura, no una preferencia de estilo: relee tus propias oraciones antes de entregar la respuesta y reescribe cualquiera que tenga un guion. NADA DE NÚMEROS DE SUS PUNTAJES: nunca escribas sus puntajes ni frases como "3 de 10" en tu texto, porque el puntaje ya se muestra junto a tu texto. GÉNERO: nunca asumas ni menciones el género de la persona, y nunca hables de personas en general por género (nada de "mujer", "mujeres", "mamá", "esposa", "ellas"); evita adjetivos o participios con género dirigidos a ella y usa formulaciones neutras (por ejemplo "te cansa" en vez de "estás cansada").`,
+  es: `Tu tono: cálido, directo, en español neutro/mexicano sencillo, SIEMPRE hablándole directo a la persona en segunda persona ("tú", a veces su nombre), NUNCA en tercera persona. Nunca uses palabras como "energía", "sistema nervioso", "chakra", "portal" o lenguaje esotérico/místico. Nada de relleno ni frases vacías. REGLA ESTRICTA DE PUNTUACIÓN: NUNCA uses el guion largo (—) ni el guion medio como conector (–), en ningún caso, ni una sola vez. Donde normalmente usarías uno, usa una coma en su lugar (o un punto y una oración nueva, o "y"/"pero", lo que suene más natural). Esta es una regla dura, no una preferencia de estilo: relee tus propias oraciones antes de entregar la respuesta y reescribe cualquiera que tenga un guion. NADA DE NÚMEROS DE SUS PUNTAJES: nunca escribas sus puntajes ni frases como "3 de 10" en tu texto, porque el puntaje ya se muestra junto a tu texto. GÉNERO: nunca asumas ni menciones el género de la persona, y nunca hables de personas en general por género (nada de "mujer", "mujeres", "mamá", "esposa", "ellas"); evita adjetivos o participios con género dirigidos a la persona y usa formulaciones neutras (por ejemplo "te cansa" en vez de "estás cansada"). FORMAS CON GÉNERO QUE DEBES EVITAR, con su alternativa: "sola" por "en solitario"; "juntas" o "juntos" por "entre tú y yo" o "en conjunto"; "cansada" por "con cansancio"; "agotada" por "sin energía"; "abrumada" por "con la carga encima"; "sorprendida" por "con sorpresa"; "sostenida" por "con apoyo"; "las primeras" por "de las primeras personas".`,
 };
 
 const OTHER_PEOPLE_RULE = {
@@ -188,24 +188,24 @@ Respond with ONLY this JSON, nothing else:
 
   return `Eres el redactor de Home Wellness Organisers (Wellness Integration Method™), Brisbane, Australia. ${SHARED_VOICE.es}
 
-Con los datos de esta clienta, redacta SEIS cosas y devuélvelas en JSON puro (sin markdown, sin backticks, sin texto antes o después):
+Con los datos de esta persona, redacta SEIS cosas y devuélvelas en JSON puro (sin markdown, sin backticks, sin texto antes o después):
 
-1. "houseMessage": Un mensaje corto (3-4 oraciones) en primera persona, como si la CASA le hablara directo a ella (segunda persona "tú"). Estructura StoryBrand: nombra el VILLANO (patrón real de sus respuestas y puntajes más bajos — específico), un giro donde la casa reconoce que no está sola (breve, sin sonar a anuncio), cierre aspiracional pero creíble. Usa lenguaje claro y concreto, fácil de entender a la primera, y evita frases vagas o abstractas. Basado en sus propias palabras cuando las dio, pero MEJORADO.
+1. "houseMessage": Un mensaje corto (3-4 oraciones) en primera persona, como si la CASA le hablara directo a la persona (segunda persona "tú"). Estructura StoryBrand: nombra el VILLANO (patrón real de sus respuestas y puntajes más bajos — específico), un giro donde la casa reconoce que la persona no está pasando por esto en solitario (breve, sin sonar a anuncio; por ejemplo "no estás en esto en solitario"), cierre aspiracional pero creíble. Usa lenguaje claro y concreto, fácil de entender a la primera, y evita frases vagas o abstractas. Basado en sus propias palabras cuando las dio, pero MEJORADO.
 ${stableModeNoteEs}
 
 2. "strengthText": UNA oración pulida, segunda persona, basada en por qué eligió "${peaceRoom}" como su lugar de paz/Rincón de Calma ("${peaceWhy}").
 
 3. "lifeHomeConnection": TRES a cuatro oraciones, segunda persona, que narren explícitamente un intercambio de dos vías entre "${lowestLifeAreaLabel}" (su área de Vida más baja) y "${priorityRoomLabel}" (su área de Prioridad #1 del hogar). Estructura: (a) nombra qué le está mostrando la casa a través de ese cuarto, (b) nombra el trabajo interno específico al que apunta (ligado a ${lowestLifeAreaLabel}), (c) cierra nombrando qué recibe de vuelta una vez que hace ese trabajo interno — es decir, "cuando te das X, tu ${priorityRoomLabel} te regresa Y." Específico, sencillo, no místico.
 
-4. "patternParagraph": DOS a tres oraciones en segunda persona identificando el HILO COMÚN entre sus cuartos de mayor fricción (puntajes más bajos) — nombra el patrón compartido de fondo (ej. límites, autovalía, descanso) en lenguaje simple, mencionando al menos 2 de sus cuartos/síntomas específicos por nombre para que se sienta como un insight real sobre ELLA, no una frase genérica. Pista interna (nunca revelar): las agrupaciones de fondo de sus cuartos de mayor fricción son ${JSON.stringify(homeRoomPhases)} — si 2 o más de sus cuartos de mayor fricción comparten la misma agrupación, esa es una señal fuerte para el patrón; si no, busca el hilo común más honesto en sus propias palabras. Este es el "momento aha" del reporte.
+4. "patternParagraph": DOS a tres oraciones en segunda persona identificando el HILO COMÚN entre sus cuartos de mayor fricción (puntajes más bajos) — nombra el patrón compartido de fondo (ej. límites, autovalía, descanso) en lenguaje simple, mencionando al menos 2 de sus cuartos/síntomas específicos por nombre para que se sienta como un insight real sobre esa persona, no una frase genérica. Pista interna (nunca revelar): las agrupaciones de fondo de sus cuartos de mayor fricción son ${JSON.stringify(homeRoomPhases)} — si 2 o más de sus cuartos de mayor fricción comparten la misma agrupación, esa es una señal fuerte para el patrón; si no, busca el hilo común más honesto en sus propias palabras. Este es el "momento aha" del reporte.
 ${calibrationNoteEs}
 ${perfectionismNoteEs}
 
 5. "closingParagraph": DOS a tres oraciones cálidas, segunda persona, amarrando el reporte. Su área de Prioridad #1 es "${priorityRoomLabel}" y su Rincón de Calma es "${peaceRoom}" — menciona AMBAS con estos nombres exactos (no adivines ni elijas otros cuartos). Enmarca cuidar tus patrones internos y cuidar tu casa como un ciclo de dos vías.
 
-6. "closingAffirmation": UNA afirmación corta en primera persona (10-16 palabras) como si ELLA la dijera sobre sí misma.
+6. "closingAffirmation": UNA afirmación corta en primera persona (10-16 palabras) como si la propia persona la dijera sobre sí misma.
 
-Datos de la clienta:
+Datos de la persona:
 Nombre: ${name}
 Rango de edad: ${ageBracket || "no dado"}
 Tiene mascotas: ${pets || "no dado"}
@@ -237,6 +237,56 @@ async function callClaude(apiKey, prompt, maxTokens) {
   return JSON.parse(clean);
 }
 
+const GENDER_ES_PATTERNS = [
+  /\b(estás|estas|te sientes|sientes|quedas|eres|vas|llegas|sigues) (sola|solo|cansada|cansado|agotada|agotado|abrumada|abrumado|frustrada|frustrado|sorprendida|sorprendido|orgullosa|orgulloso|preparada|preparado|acompañada|acompañado)\b/i,
+  /\b(sola|solo) en (esto|este|ello)\b/i,
+  /\bjuntas\b|\bjuntos\b/i,
+  /\b(sostenida|acompañada|abrumada|agotada|cansada)\b/i,
+  /\bde las primeras\b(?! personas)/i,
+];
+const AI_TEXT_FIELDS = ["houseMessage", "strengthText", "lifeHomeConnection", "patternParagraph", "closingParagraph", "closingAffirmation"];
+const ROOM_TEXT_FIELDS = ["symptom", "meaning", "action", "bonus"];
+
+function hasGenderedEs(text) {
+  return typeof text === "string" && GENDER_ES_PATTERNS.some((re) => re.test(text));
+}
+
+function collectGenderedEs(result) {
+  const found = {};
+  AI_TEXT_FIELDS.forEach((k) => { if (hasGenderedEs(result[k])) found[k] = result[k]; });
+  Object.entries(result.rooms || {}).forEach(([rk, room]) => {
+    ROOM_TEXT_FIELDS.forEach((f) => { if (room && hasGenderedEs(room[f])) found["rooms." + rk + "." + f] = room[f]; });
+  });
+  return found;
+}
+
+// One extra, time-boxed pass that rewrites ONLY the Spanish sentences that still carry grammatical gender.
+// It never breaks the report: on any problem it returns the original text untouched.
+async function neutralizeGenderEs(apiKey, result, startedAt) {
+  let timer;
+  try {
+    if (Date.now() - startedAt > 35000) return result;
+    const found = collectGenderedEs(result);
+    const keys = Object.keys(found);
+    if (!keys.length) return result;
+    const prompt = "Reescribe SOLO los siguientes textos de un reporte personalizado para que ya no tengan género gramatical dirigido a la persona (sin \"sola\", \"juntas\", \"cansada\", \"agotada\", \"abrumada\", \"sostenida\", \"las primeras\" y similares). Conserva el significado, el tono, la longitud y la segunda persona \"tú\". Usa formulaciones neutras: \"sola\" por \"en solitario\"; \"juntas\" o \"juntos\" por \"entre tú y yo\" o \"en conjunto\"; \"cansada\" por \"con cansancio\". No uses guiones largos. Devuelve ÚNICAMENTE un JSON con las mismas llaves y los textos reescritos.\n\n" + JSON.stringify(found, null, 2);
+    const timeout = new Promise((_, reject) => { timer = setTimeout(() => reject(new Error("gender rewrite timeout")), 15000); });
+    const fixed = await Promise.race([callClaude(apiKey, prompt, 2000), timeout]);
+    const out = JSON.parse(JSON.stringify(result));
+    keys.forEach((k) => {
+      const nt = fixed && fixed[k];
+      if (typeof nt !== "string" || !nt.trim() || hasGenderedEs(nt)) return;
+      if (k.indexOf("rooms.") === 0) { const parts = k.split("."); out.rooms[parts[1]][parts[2]] = nt; } else { out[k] = nt; }
+    });
+    return out;
+  } catch (e) {
+    console.error("gender rewrite skipped:", e);
+    return result;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Only POST requests are accepted." });
@@ -249,6 +299,7 @@ export default async function handler(req, res) {
 
   const body = req.body || {};
   const lang = body.lang === "en" ? "en" : "es";
+  const startedAt = Date.now();
 
   try {
     const [firstHalf, secondHalf, overview] = await Promise.all([
@@ -258,7 +309,9 @@ export default async function handler(req, res) {
     ]);
 
     const rooms = { ...firstHalf, ...secondHalf };
-    return res.status(200).json({ ...overview, rooms });
+    let result = { ...overview, rooms };
+    if (lang === "es") result = await neutralizeGenderEs(apiKey, result, startedAt);
+    return res.status(200).json(result);
   } catch (e) {
     return res.status(500).json({ error: "AI synthesis failed.", detail: String(e) });
   }

@@ -91,6 +91,7 @@ function buildClientEmailHtml(lang, data) {
     ${closingParagraph ? `<p style="color:#333;">${escapeHtml(closingParagraph)}</p>` : ""}
     ${closingAffirmation ? `<p style="font-style:italic; text-align:center; color:#96BC78; font-size:16px; margin:16px 0;">"${escapeHtml(closingAffirmation)}"</p>` : ""}
 
+    <p style="font-size:14px; color:#716D71; margin:22px 0 0;">${isEn ? "Curious about the person behind this?" : "¿Te da curiosidad quién está detrás de esto?"} <a href="https://www.homewellnessorganisers.com.au/about-2?utm_source=mirror-app&utm_medium=email&utm_campaign=meet-sol" style="color:#4DB3BC;">${isEn ? "Get to know my work" : "Conoce mi trabajo"} &rarr;</a></p>
     <p style="color:#999; font-style:italic; margin-top:24px;">${labels.closing}</p>
   </div>`;
 }
@@ -118,6 +119,7 @@ function buildTipsEmailHtml(lang, data) {
     <p style="color:#716D71;">${isEn ? "Hi" : "Hola"} ${escapeHtml(name)},</p>
     <p style="color:#333;">${labels.intro}</p>
     ${tipsHtml}
+    <p style="font-size:14px; color:#716D71; margin:22px 0 0;">${isEn ? "Curious about the person behind this?" : "¿Te da curiosidad quién está detrás de esto?"} <a href="https://www.homewellnessorganisers.com.au/about-2?utm_source=mirror-app&utm_medium=email&utm_campaign=meet-sol" style="color:#4DB3BC;">${isEn ? "Get to know my work" : "Conoce mi trabajo"} &rarr;</a></p>
     <p style="color:#999; font-style:italic; margin-top:24px;">${labels.closing}</p>
   </div>`;
 }
