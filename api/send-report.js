@@ -186,11 +186,11 @@ function buildAiFailureAlertHtml(data) {
   const lowCredit = /credit|balance|billing/i.test(String(detail || ""));
   return `<div style="max-width:600px; font-family:sans-serif; color:#333;">
     <h2 style="color:#B3453F;">La IA falló al generar un Reporte Completo</h2>
-    <p><b>Clienta:</b> ${escapeHtml(name || "?")} (${escapeHtml(email || "sin correo")})<br><b>Idioma:</b> ${lang === "en" ? "inglés" : "español"}</p>
+    <p><b>Persona:</b> ${escapeHtml(name || "?")} (${escapeHtml(email || "sin correo")})<br><b>Idioma:</b> ${lang === "en" ? "inglés" : "español"}</p>
     <p>Esta persona vio, y probablemente recibió por correo, el texto genérico de respaldo en vez de su reporte personalizado.</p>
     ${lowCredit ? '<p style="background:#F8EDD0; padding:10px; border-radius:6px;"><b>Causa probable:</b> el saldo de créditos de Anthropic podría estar agotado. Revísalo en console.anthropic.com (Billing).</p>' : ""}
     <p><b>Qué hacer:</b></p>
-    <ol><li>Revisa el saldo y los límites de Anthropic.</li><li>Escríbele a la clienta para ofrecerle repetir su reporte.</li></ol>
+    <ol><li>Revisa el saldo y los límites de Anthropic.</li><li>Escríbele a esta persona para ofrecerle repetir su reporte.</li></ol>
     <p style="color:#777; font-size:13px;"><b>Detalle técnico:</b> ${escapeHtml(detail || "sin detalle")}</p>
   </div>`;
 }
