@@ -131,10 +131,10 @@ function buildOverviewPrompt(lang, payload) {
   const stableMode = Math.min(...homeScores) >= 8;
 
   const stableModeNote = stableMode
-    ? `CRITICAL — STABLE MODE: her lowest home score is ${Math.min(...homeScores)}/10 — there is NO genuine problem area right now. Do NOT invent a "villain" or frame any room as something to fix. For "houseMessage", skip the villain/problem structure entirely — instead have the home speak warmly about the ease it feels, and gently raise (never assert) whether that ease has room for imperfection, tied to the client's own words if she gave any. For "closingParagraph", do NOT reference "${priorityRoomLabel}" as a priority or problem at all — only reference her Sanctuary ("${peaceRoom}") and close on the idea of maintaining what's working, not fixing anything.`
+    ? `CRITICAL — STABLE MODE: her lowest home score is ${Math.min(...homeScores)}/10 — there is NO genuine problem area right now. Do NOT invent a "villain" or frame any room as something to fix. For "houseMessage", skip the villain/problem structure entirely — instead have the home speak warmly about the ease it feels, and gently raise (never assert) whether that ease has room for imperfection, tied to the client's own words if she gave any. For "closingParagraph", do NOT reference "${priorityRoomLabel}" as a priority or problem at all — only reference her Calm Spot ("${peaceRoom}") and close on the idea of maintaining what's working, not fixing anything.`
     : "";
   const stableModeNoteEs = stableMode
-    ? `CRÍTICO — MODO ESTABLE: su puntaje más bajo del hogar es ${Math.min(...homeScores)}/10 — NO hay un área con problema real ahora mismo. NO inventes un "villano" ni enmarques ningún cuarto como algo que arreglar. Para "houseMessage", omite por completo la estructura de villano/problema — en vez de eso, que la casa hable cálidamente de la calma que siente, e invite suavemente (nunca afirme) a considerar si esa calma tiene margen para lo imperfecto, ligado a sus propias palabras si las dio. Para "closingParagraph", NO menciones "${priorityRoomLabel}" como prioridad ni problema en absoluto — solo menciona su Santuario ("${peaceRoom}") y cierra con la idea de mantener lo que ya funciona, no de arreglar algo.`
+    ? `CRÍTICO — MODO ESTABLE: su puntaje más bajo del hogar es ${Math.min(...homeScores)}/10 — NO hay un área con problema real ahora mismo. NO inventes un "villano" ni enmarques ningún cuarto como algo que arreglar. Para "houseMessage", omite por completo la estructura de villano/problema — en vez de eso, que la casa hable cálidamente de la calma que siente, e invite suavemente (nunca afirme) a considerar si esa calma tiene margen para lo imperfecto, ligado a sus propias palabras si las dio. Para "closingParagraph", NO menciones "${priorityRoomLabel}" como prioridad ni problema en absoluto — solo menciona su Rincón de Calma ("${peaceRoom}") y cierra con la idea de mantener lo que ya funciona, no de arreglar algo.`
     : "";
 
   const calibrationNote = isTightRange
@@ -158,7 +158,7 @@ Using this client's data, write SIX things and return them as pure JSON (no mark
 1. "houseMessage": A short message (3-4 sentences) in first person, as if the HOME were speaking directly to her (second person "you"). StoryBrand structure: name the VILLAIN (the real pattern shown by her answers and lowest scores — specific, not generic), a turn where the home acknowledges she's not alone (briefly, no ad-like tone), close aspirational but believable. Base it on her own words when given, but IMPROVED, not verbatim.
 ${stableModeNote}
 
-2. "strengthText": ONE polished, second-person sentence based on why she chose "${peaceRoom}" as her place of peace/Sanctuary ("${peaceWhy}").
+2. "strengthText": ONE polished, second-person sentence based on why she chose "${peaceRoom}" as her place of peace/Calm Spot ("${peaceWhy}").
 
 3. "lifeHomeConnection": THREE to four sentences, second person, that explicitly narrate a two-way exchange between "${lowestLifeAreaLabel}" (her lowest Wheel of Life area) and "${priorityRoomLabel}" (her Priority #1 home area). Structure: (a) name what the home is showing her through this room, (b) name the specific inner work this points to (tied to ${lowestLifeAreaLabel}), (c) close by naming what she gets back once she does that inner work — i.e. "when you give yourself X, your ${priorityRoomLabel} gives you Y back." Specific, plain, not mystical.
 
@@ -166,7 +166,7 @@ ${stableModeNote}
 ${calibrationNote}
 ${perfectionismNote}
 
-5. "closingParagraph": TWO to three warm, second-person sentences tying the report together. Her Priority #1 area is "${priorityRoomLabel}" and her Sanctuary area is "${peaceRoom}" — reference BOTH by these exact names (do not guess or pick different rooms). Frame tending her inner patterns and tending her home as a two-way loop.
+5. "closingParagraph": TWO to three warm, second-person sentences tying the report together. Her Priority #1 area is "${priorityRoomLabel}" and her Calm Spot area is "${peaceRoom}" — reference BOTH by these exact names (do not guess or pick different rooms). Frame tending her inner patterns and tending her home as a two-way loop.
 
 6. "closingAffirmation": ONE short first-person affirmation (10-16 words) as if SHE is saying it about herself.
 
@@ -177,7 +177,7 @@ Has pets: ${pets || "not given"}
 Household type: ${household}
 Her Priority #1 (lowest-scoring) home area is: ${priorityRoomLabel} — use this exact name.
 Her lowest-scoring Wheel of Life area is: ${lowestLifeAreaLabel} — use this exact name.
-Her chosen place of peace (her Sanctuary area): ${peaceRoom} — reason: "${peaceWhy}"
+Her chosen place of peace (her Calm Spot area): ${peaceRoom} — reason: "${peaceWhy}"
 What she wrote if her home could talk: "${houseVoice}"
 Anything else: "${additionalNotes || ""}"
 Her room-by-room observations: ${JSON.stringify(roomRaw)}
@@ -193,7 +193,7 @@ Con los datos de esta clienta, redacta SEIS cosas y devuélvelas en JSON puro (s
 1. "houseMessage": Un mensaje corto (3-4 oraciones) en primera persona, como si la CASA le hablara directo a ella (segunda persona "tú"). Estructura StoryBrand: nombra el VILLANO (patrón real de sus respuestas y puntajes más bajos — específico), un giro donde la casa reconoce que no está sola (breve, sin sonar a anuncio), cierre aspiracional pero creíble. Basado en sus propias palabras cuando las dio, pero MEJORADO.
 ${stableModeNoteEs}
 
-2. "strengthText": UNA oración pulida, segunda persona, basada en por qué eligió "${peaceRoom}" como su lugar de paz/Santuario ("${peaceWhy}").
+2. "strengthText": UNA oración pulida, segunda persona, basada en por qué eligió "${peaceRoom}" como su lugar de paz/Rincón de Calma ("${peaceWhy}").
 
 3. "lifeHomeConnection": TRES a cuatro oraciones, segunda persona, que narren explícitamente un intercambio de dos vías entre "${lowestLifeAreaLabel}" (su área de Vida más baja) y "${priorityRoomLabel}" (su área de Prioridad #1 del hogar). Estructura: (a) nombra qué le está mostrando la casa a través de ese cuarto, (b) nombra el trabajo interno específico al que apunta (ligado a ${lowestLifeAreaLabel}), (c) cierra nombrando qué recibe de vuelta una vez que hace ese trabajo interno — es decir, "cuando te das X, tu ${priorityRoomLabel} te regresa Y." Específico, sencillo, no místico.
 
@@ -201,7 +201,7 @@ ${stableModeNoteEs}
 ${calibrationNoteEs}
 ${perfectionismNoteEs}
 
-5. "closingParagraph": DOS a tres oraciones cálidas, segunda persona, amarrando el reporte. Su área de Prioridad #1 es "${priorityRoomLabel}" y su área de Santuario es "${peaceRoom}" — menciona AMBAS con estos nombres exactos (no adivines ni elijas otros cuartos). Enmarca cuidar tus patrones internos y cuidar tu casa como un ciclo de dos vías.
+5. "closingParagraph": DOS a tres oraciones cálidas, segunda persona, amarrando el reporte. Su área de Prioridad #1 es "${priorityRoomLabel}" y su Rincón de Calma es "${peaceRoom}" — menciona AMBAS con estos nombres exactos (no adivines ni elijas otros cuartos). Enmarca cuidar tus patrones internos y cuidar tu casa como un ciclo de dos vías.
 
 6. "closingAffirmation": UNA afirmación corta en primera persona (10-16 palabras) como si ELLA la dijera sobre sí misma.
 
@@ -212,7 +212,7 @@ Tiene mascotas: ${pets || "no dado"}
 Tipo de hogar: ${household}
 Su Prioridad #1 (puntaje más bajo) es: ${priorityRoomLabel} — usa este nombre exacto.
 Su área de Vida con puntaje más bajo es: ${lowestLifeAreaLabel} — usa este nombre exacto.
-Su zona de paz elegida (su área de Santuario): ${peaceRoom} — razón: "${peaceWhy}"
+Su zona de paz elegida (su Rincón de Calma): ${peaceRoom} — razón: "${peaceWhy}"
 Lo que escribió si su casa hablara: "${houseVoice}"
 Algo más: "${additionalNotes || ""}"
 Sus observaciones por cuarto: ${JSON.stringify(roomRaw)}
